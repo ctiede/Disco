@@ -68,11 +68,12 @@ struct domain{
    struct face * theFaces_1;
    struct face * theFaces_2;
    struct planet * thePlanets;
+   struct tracer * theTracers;
    int * Np;
    int Nr,Nz,Ng;
    int N_ftracks_r;
    int N_ftracks_z;
-   int Npl;
+   int Npl, Ntr;	//number of planets and number of tracers
    double * r_jph;
    double * z_kph;
    double phi_max;
@@ -92,7 +93,7 @@ struct domain{
    struct diagnostic_avg theTools;
 
    double t;
-   int count_steps;
+   int count_steps, mdStep;
    double t_init, t_fin;
    int nrpt;
    int N_rpt;
@@ -169,4 +170,15 @@ struct planet{
    double eps;
    double Fr;
    double Fp;
+};
+
+struct tracer{
+   int    Type;
+   double R;
+   double Phi;
+   double Z;
+   double Vr;
+   double Omega;
+   double Vz;
+
 };

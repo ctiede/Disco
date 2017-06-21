@@ -6,12 +6,14 @@ double get_dV( double * , double * );
 
 int num_diagnostics( void );
 void initializePlanets( struct planet * );
+void initializeTracers( struct domain * );
 
 void setICparams( struct domain * );
 void setHydroParams( struct domain * );
 void setGeometryParams( struct domain * );
 void setRiemannParams( struct domain * );
 void setPlanetParams( struct domain * );
+void setTracerParams( struct domain * );
 void setHlldParams( struct domain * );
 void setDiskParams( struct domain * );
 void setOmegaParams( struct domain * );
@@ -37,6 +39,12 @@ void setupDomain( struct domain * theDomain ){
    theDomain->thePlanets = (struct planet *) malloc( Npl*sizeof(struct planet) );
    initializePlanets( theDomain->thePlanets );
 
+   //initialize tracers
+   setTracerParams( theDomain );
+   int Ntr = theDomain->Ntr;
+   theDomain->theTracers = (struct tracer *) malloc( Ntr*sizeof(struct tracer) );
+   initializeTracers( theDomain );
+   
    int num_tools = num_diagnostics();
    theDomain->num_tools = num_tools;
    theDomain->theTools.t_avg = 0.0;
@@ -223,6 +231,7 @@ void check_dt( struct domain * theDomain , double * dt ){
 void report( struct domain * );
 void snapshot( struct domain * , char * );
 void output( struct domain * , char * );
+void tracerOutput( struct domain * );
 
 void possiblyOutput( struct domain * theDomain , int override ){
 
@@ -258,9 +267,11 @@ void possiblyOutput( struct domain * theDomain , int override ){
             theDomain->check_plz = 0;
          }
          output( theDomain , filename );
+	 tracerOutput( theDomain );
       }else{
          if(theDomain->rank==0) printf("Creating Final Checkpoint...\n");
          output( theDomain , "output" );
+	 tracerOutput( theDomain );
       }
    }
    n0 = (int)( t*Nsnp/t_fin );
@@ -273,6 +284,41 @@ void possiblyOutput( struct domain * theDomain , int override ){
       //snapshot( theDomain , filename );
    }
 
+} 
+
+void tracerOutput( struct domain *theDomain ){
+
+   char filename[256];
+   sprintf(filename, "%s.xyz", "tracerTest" );
+  
+   int Ntr = theDomain->Ntr;
+   int step = theDomain->mdStep;
+
+   if( step==0 ){
+	FILE * pFile = fopen(filename, "w");
+	fclose(pFile);
+   }
+   FILE * pFile = fopen(filename, "a");
+
+   fprintf(pFile, "%d\nAtoms. Timestep: %d", Ntr, step);    
+   int i;
+   for( i=0; i<Ntr; ++i){
+	struct tracer *tr = theDomain->theTracers + i;	 
+	double r = tr->R;
+	double phi = tr->Phi;
+	double z = tr->Z;
+	fprintf(pFile, "%f %f %f \n", r,phi,z);
+   }
+
+   step++;
+   theDomain->mdStep = step;
+   fclose(pFile);
 }
+
+
+
+
+
+
 
 
