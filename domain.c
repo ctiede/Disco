@@ -300,7 +300,7 @@ void tracerOutput( struct domain *theDomain ){
    }
    FILE * pFile = fopen(filename, "a");
 
-   fprintf(pFile, "%d\nAtoms. Timestep: %d", Ntr, step);    
+   fprintf(pFile, "%d\nAtoms. Timestep: %d\n", Ntr, step);    
    int i;
    for( i=0; i<Ntr; ++i){
 	struct tracer *tr = theDomain->theTracers + i;	 
