@@ -2,7 +2,7 @@
 
 void setTracerParams( struct domain * theDomain){
 
-   theDomain->Ntr = 10;
+   theDomain->Ntr = 500;
 }
 
 void initializeTracers( struct domain *theDomain ){

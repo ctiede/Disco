@@ -267,11 +267,11 @@ void possiblyOutput( struct domain * theDomain , int override ){
             theDomain->check_plz = 0;
          }
          output( theDomain , filename );
-	 tracerOutput( theDomain );
+         // tracerOutput( theDomain );
       }else{
          if(theDomain->rank==0) printf("Creating Final Checkpoint...\n");
          output( theDomain , "output" );
-	 tracerOutput( theDomain );
+	 // tracerOutput( theDomain );
       }
    }
    n0 = (int)( t*Nsnp/t_fin );
@@ -307,7 +307,9 @@ void tracerOutput( struct domain *theDomain ){
 	double r = tr->R;
 	double phi = tr->Phi;
 	double z = tr->Z;
-	fprintf(pFile, "%f %f %f \n", r,phi,z);
+	double x = r*cos(phi);
+	double y = r*sin(phi);
+	fprintf(pFile, "%f %f %f %f %f \n", r,phi,x,y,z);
    }
 
    step++;

@@ -19,6 +19,7 @@ void setupDomain( struct domain * );
 void freeDomain( struct domain * );
 void check_dt( struct domain * , double * );
 void possiblyOutput( struct domain * , int );
+void tracerOutput( struct domain *);
 
 void start_clock( struct domain * );
 void generate_log( struct domain * );
@@ -60,10 +61,12 @@ int main( int argc , char * argv[] ){
       check_dt( &theDomain , &dt );
       possiblyOutput( &theDomain , 0 );
       timestep( &theDomain , dt );
+      tracerOutput( &theDomain );    
 
    }
 
    possiblyOutput( &theDomain , 1 );
+   tracerOutput( &theDomain );
    generate_log( &theDomain );
    MPI_Barrier(theDomain.theComm);
    freeDomain( &theDomain );

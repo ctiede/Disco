@@ -3,6 +3,7 @@
 void planet_RK_copy( struct planet * );
 void onestep( struct domain * , double , double , int , int , double );
 void add_diagnostics( struct domain * , double );
+void updateTracers( struct domain *, double );
 
 void timestep( struct domain * theDomain , double dt ){
    
@@ -28,6 +29,8 @@ void timestep( struct domain * theDomain , double dt ){
    onestep( theDomain , 0.0 ,     dt , 1 , 0 , dt );
    onestep( theDomain , 0.5 , 0.5*dt , 0 , 1 , dt );
 //   onestep( theDomain , 0.0 ,     dt , 1 , 1 , dt );
+   
+   updateTracers( theDomain, dt );
 
    add_diagnostics( theDomain , dt );
    theDomain->t += dt;   
