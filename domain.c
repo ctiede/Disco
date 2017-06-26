@@ -304,12 +304,13 @@ void tracerOutput( struct domain *theDomain ){
    int i;
    for( i=0; i<Ntr; ++i){
 	struct tracer *tr = theDomain->theTracers + i;	 
+	int type = tr->Type;
 	double r = tr->R;
 	double phi = tr->Phi;
 	double z = tr->Z;
 	double x = r*cos(phi);
 	double y = r*sin(phi);
-	fprintf(pFile, "%f %f %f %f %f \n", r,phi,x,y,z);
+	fprintf(pFile, "%d %f %f %f %f %f \n", type,x,y,z,r,phi);
    }
 
    step++;
