@@ -44,7 +44,7 @@ void setupDomain( struct domain * theDomain ){
    int Ntr = theDomain->Ntr;
    theDomain->theTracers = (struct tracer *) malloc( Ntr*sizeof(struct tracer) );
    initializeTracers( theDomain );
-   
+
    int num_tools = num_diagnostics();
    theDomain->num_tools = num_tools;
    theDomain->theTools.t_avg = 0.0;
@@ -99,10 +99,10 @@ void setupDomain( struct domain * theDomain ){
 
 }
 
-void initial( double * , double * ); 
+void initial( double * , double * );
 void prim2cons( double * , double * , double * , double );
 void cons2prim( double * , double * , double * , double );
-void restart( struct domain * ); 
+void restart( struct domain * );
 void calc_dp( struct domain * );
 void set_wcell( struct domain * );
 void adjust_gas( struct planet * , double * , double * , double );
@@ -133,7 +133,7 @@ void setupCells( struct domain * theDomain ){
             struct cell * c = &(theCells[jk][i]);
             double phip = c->piph;
             double phim = phip-c->dphi;
-            c->wiph = 0.0; 
+            c->wiph = 0.0;
             double xp[3] = {r_jph[j  ],phip,z_kph[k  ]};
             double xm[3] = {r_jph[j-1],phim,z_kph[k-1]};
             double r = get_moment_arm( xp , xm );
@@ -143,7 +143,7 @@ void setupCells( struct domain * theDomain ){
             if( !restart_flag )
             {
                initial( c->prim , x );
-               subtract_omega( c->prim ); 
+               subtract_omega( c->prim );
                if( atmos ){
                   int p;
                   for( p=0 ; p<Npl ; ++p ){
@@ -154,8 +154,8 @@ void setupCells( struct domain * theDomain ){
             }
             prim2cons( c->prim , c->cons , x , dV );
             cons2prim( c->cons , c->prim , x , dV );
-         }    
-      }    
+         }
+      }
    }
 
    set_wcell( theDomain );
@@ -250,7 +250,7 @@ void possiblyOutput( struct domain * theDomain , int override ){
       theDomain->nrpt = n0;
       //longandshort( &theDomain , &L , &S , &iL , &iS , theDomain.theCells[0] , 0 , 0 );
       report( theDomain );
-      if( theDomain->rank==0 ) printf("t = %.3e\n",t);
+      if( theDomain->rank==0 ) printf("t = %.3e\n", t);
    }
    n0 = (int)( t*Nchk/t_fin );
    if( LogOut ) n0 = (int)( Nchk*log(t/t_min)/log(t_fin/t_min) );
@@ -284,13 +284,13 @@ void possiblyOutput( struct domain * theDomain , int override ){
       //snapshot( theDomain , filename );
    }
 
-} 
+}
 
 void tracerOutput( struct domain *theDomain ){
 
    char filename[256];
    sprintf(filename, "%s.xyz", "tracerTest" );
-  
+
    int Ntr = theDomain->Ntr;
    int step = theDomain->mdStep;
 
@@ -300,10 +300,10 @@ void tracerOutput( struct domain *theDomain ){
    }
    FILE * pFile = fopen(filename, "a");
 
-   fprintf(pFile, "%d\nAtoms. Timestep: %d\n", Ntr, step);    
+   fprintf(pFile, "%d\nAtoms. Timestep: %d\n", Ntr, step);
    int i;
    for( i=0; i<Ntr; ++i){
-	struct tracer *tr = theDomain->theTracers + i;	 
+	struct tracer *tr = theDomain->theTracers + i;
 	int type = tr->Type;
 	double r = tr->R;
 	double phi = tr->Phi;
@@ -320,11 +320,3 @@ void tracerOutput( struct domain *theDomain ){
    theDomain->mdStep = step;
    fclose(pFile);
 }
-
-
-
-
-
-
-
-

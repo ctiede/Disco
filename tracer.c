@@ -80,13 +80,13 @@ int check_in_cell(struct tracer *Tr, double *xp, double *xm, double phi_max){
 
 void test_cell_vel( struct tracer *tr, struct cell *c ){
 
-   int check1=0, check2=0, check3=0;
-   if( isnan(c->prim[URR]) ){
-	tr->Vr 	  = 0;
-	tr->Omega = 0;
-	tr->Vz    = 0;
-	tr->Type  = 3;
-	check1 = 1;
+  int check1=0, check2=0, check3=0;
+  if( isnan(c->prim[URR]) ){
+    tr->Vr 	  = 0;
+    tr->Omega = 0;
+    tr->Vz    = 0;
+    tr->Type  = 3;
+    check1 = 1;
    }/*
    if( c->prim[UPP] != c->prim[UPP] ){
 	tr->Vr    = 0;
@@ -102,7 +102,7 @@ void test_cell_vel( struct tracer *tr, struct cell *c ){
         tr->Type  = 5;
 	check3 = 1;
    }
-   
+
   if( check1==1 && check2==1 && check3==1){ tr->Type = 6; }
 */
 }
@@ -110,7 +110,7 @@ void test_cell_vel( struct tracer *tr, struct cell *c ){
 
 void get_local_vel(struct tracer *tr, struct cell *c){
 
-   double vr, om, vz; 
+   double vr, om, vz;
    int type = 1;
 
   if( c != NULL ){
@@ -128,7 +128,7 @@ void get_local_vel(struct tracer *tr, struct cell *c){
    tr->Vz    = vz;
    tr->Type  = type;
    if( c != NULL ){
-	test_cell_vel( tr, c );
+     test_cell_vel( tr, c );
    }
 }
 
@@ -187,13 +187,13 @@ void moveTracers(struct domain *theDomain, struct tracer *aTracer, double dt){
 
    z += aTracer->Vz*dt;
    if( z > zmax ) z = 0.0/0.0;
-   if( z < zmin ) z = 0.0/0.0; 
+   if( z < zmin ) z = 0.0/0.0;
 
    aTracer->R = r;
    aTracer->Z = z;
 
    phi += aTracer->Omega*dt;
-   aTracer->Phi = phi; 
+   aTracer->Phi = phi;
    clean_pi_tr(theDomain);
 
 }
@@ -221,7 +221,7 @@ void tracer_RK_adjust( struct planet * pl , double RK ){
 
 
 void updateTracers(struct domain *theDomain, double dt){
- 
+
    int Ntr = theDomain->Ntr;
    int tr;
    for( tr=0 ; tr<Ntr ; ++tr){
@@ -230,5 +230,5 @@ void updateTracers(struct domain *theDomain, double dt){
 	//test_cell_vel( c,  );
         moveTracers(theDomain, theDomain->theTracers + tr, dt);
    }
-   
+
 }
