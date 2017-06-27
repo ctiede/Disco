@@ -1,7 +1,11 @@
 import sys
 import h5py as h5
 import numpy as np
+import matplotlib
+matplotlib.use("Agg")
+print matplotlib.get_backend()
 import matplotlib.pyplot as plt
+print matplotlib.get_backend()
 
 def loadCheckpoint(filename):
 
