@@ -242,6 +242,7 @@ void possiblyOutput( struct domain * theDomain , int override ){
    double Nsnp = theDomain->N_snp;
    double Nchk = theDomain->N_chk;
    int LogOut = theDomain->theParList.Out_LogTime;
+   int step = theDomain->mdStep;
    int n0;
 
    n0 = (int)( t*Nrpt/t_fin );
@@ -250,7 +251,8 @@ void possiblyOutput( struct domain * theDomain , int override ){
       theDomain->nrpt = n0;
       //longandshort( &theDomain , &L , &S , &iL , &iS , theDomain.theCells[0] , 0 , 0 );
       report( theDomain );
-      if( theDomain->rank==0 ) printf("t = %.3e\n", t);
+
+      if( theDomain->rank==0 ) printf("t = %.3e   Step = %d\n", t,step);
    }
    n0 = (int)( t*Nchk/t_fin );
    if( LogOut ) n0 = (int)( Nchk*log(t/t_min)/log(t_fin/t_min) );

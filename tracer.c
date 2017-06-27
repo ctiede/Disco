@@ -30,17 +30,13 @@ void initializeTracers( struct domain *theDomain ){
 
 }
 
-void clean_pi_tr( struct domain *theDomain ){
-   int Ntr = theDomain->Ntr;
-   double phi_max = theDomain->phi_max;
-   int i;
-   for( i=0; i<Ntr; ++i){
-      struct tracer *tr = theDomain->theTracers + i;
-      double phi = tr->Phi;
-      while( phi > phi_max ){ phi -= phi_max; }
-      tr->Phi = phi;
-   }
+void clean_pi_tr( struct tracer *tr, double phi_max ){
 
+   double phi = tr->Phi;
+   while( phi > phi_max ){
+	 phi -= phi_max;
+   }
+   tr->Phi = phi;
 }
 
 
@@ -80,14 +76,15 @@ int check_in_cell(struct tracer *Tr, double *xp, double *xm, double phi_max){
 
 void test_cell_vel( struct tracer *tr, struct cell *c ){
 
-  int check1=0, check2=0, check3=0;
-  if( isnan(c->prim[URR]) ){
-    tr->Vr 	  = 0;
-    tr->Omega = 0;
-    tr->Vz    = 0;
-    tr->Type  = 3;
-    check1 = 1;
-   }/*
+
+   int check1=0, check2=0, check3=0;
+   if( isnan(c->prim[URR]) ){
+	tr->Vr 	  = 0;
+	tr->Omega = 0;
+	tr->Vz    = 0;
+	tr->Type  = 3;
+	check1 = 1;
+   }
    if( c->prim[UPP] != c->prim[UPP] ){
 	tr->Vr    = 0;
         tr->Omega = 0;
@@ -104,7 +101,7 @@ void test_cell_vel( struct tracer *tr, struct cell *c ){
    }
 
   if( check1==1 && check2==1 && check3==1){ tr->Type = 6; }
-*/
+
 }
 
 
@@ -168,33 +165,40 @@ struct cell * get_tracer_cell(struct domain *theDomain, struct tracer *aTracer){
 
 //void clean_pi(struct domain * );
 
-void moveTracers(struct domain *theDomain, struct tracer *aTracer, double dt){
+void moveTracers(struct domain *theDomain, struct tracer *tr, double dt){
 
    double rmin = theDomain->theParList.rmin;
    double rmax = theDomain->theParList.rmax;
    double zmin = theDomain->theParList.zmin;
    double zmax = theDomain->theParList.zmax;
+   double phi_max = theDomain->phi_max;
 
-   double r = aTracer->R;
-   double phi = aTracer->Phi;
-   double z = aTracer->Z;
+   double r = tr->R;
+   double phi = tr->Phi;
+   double z = tr->Z;
 
   // double k1, k2;
 
-   r += aTracer->Vr*dt;
+   r += tr->Vr*dt;
    if( r > rmax ) r = 0.0/0.0;
    if( r < rmin ) r = 0.0/0.0;
 
-   z += aTracer->Vz*dt;
+   z += tr->Vz*dt;
    if( z > zmax ) z = 0.0/0.0;
    if( z < zmin ) z = 0.0/0.0;
 
-   aTracer->R = r;
-   aTracer->Z = z;
+   tr->R = r;
+   tr->Z = z;
 
+<<<<<<< HEAD
    phi += aTracer->Omega*dt;
    aTracer->Phi = phi;
    clean_pi_tr(theDomain);
+=======
+   phi += tr->Omega*dt;
+   tr->Phi = phi;
+   clean_pi_tr(tr, phi_max);
+>>>>>>> f1de7e9b0001a0e8d7d49fb61ae1fd09163eaee3
 
 }
 
