@@ -10,7 +10,7 @@ T_Times_2pi		1
 //Output Frequency//
 Num_Reports		1e5
 Num_Snapshots		0
-Num_Checkpoints		10
+Num_Checkpoints		0
 Use_Logtime		0
 
 //Grid Dimensions//

@@ -310,7 +310,10 @@ void tracerOutput( struct domain *theDomain ){
 	double z = tr->Z;
 	double x = r*cos(phi);
 	double y = r*sin(phi);
-	fprintf(pFile, "%d %f %f %f %f %f \n", type,x,y,z,r,phi);
+	double vr = tr->Vr;
+	double om = tr->Omega;
+	double vz = tr->Vz;
+	fprintf(pFile, "%d %f %f %f %f %f  %f %f %f \n", type,x,y,z,r,phi, vr,om,vz);
    }
 
    step++;
