@@ -2,7 +2,7 @@
 
 void setTracerParams( struct domain * theDomain){
 
-   theDomain->Ntr = 20;
+   theDomain->Ntr = 2000;
 }
 
 void initializeTracers( struct domain *theDomain ){
@@ -16,11 +16,11 @@ void initializeTracers( struct domain *theDomain ){
    double dz   = zmax - zmin;
    double phimax = theParamList.phimax;
 
-   srand(0);
+   srand(theDomain->rank);
    int Ntr = theDomain->Ntr;
-   int i;
-   for( i=0; i<Ntr; ++i ){
-	struct tracer *tr = theDomain->theTracers+i;
+   int n;
+   for( n=0; n<Ntr; ++n ){
+	struct tracer *tr = theDomain->theTracers+n;
         double r = rmin + ((double)rand()/(double)RAND_MAX)*dr;
 	double z = zmin + ((double)rand()/(double)RAND_MAX)*dz;
 	double phi = ((double)rand()/(double)RAND_MAX)*phimax;
@@ -40,32 +40,25 @@ void clean_pi_tr( struct tracer *tr, double phi_max ){
 }
 
 
-int check_phi(double phi, double phip, double phim, double phi_max){
-/*
-   if( phip > phim ){
-	if( phim < phi && phi < phip){ return 1; }
-   }
-   else{
-	if( phim<phi && phi<phi_max ){ return 1; }
-	else if( 0.0<phi && phi<phip ){ return 1; }
-   }
-*/
+int check_phi(double phi, double phip, double dphi, double phi_max){
 
-  if( phim < phi && phi < phip ){ return 1; }
-  else{
-   return 0;
-  }
+   double phic = phi - phip;
+   while( phic >  phi_max/2.0 ){ phic -= phi_max; }
+   while( phic < -phi_max/2.0 ){ phic += phi_max; }
+   if( -dphi<phic && phic<0 ){ return 1; }
+   else{ return 0; } 
+
 }
 
-int check_in_cell(struct tracer *Tr, double *xp, double *xm, double phi_max){
+int check_in_cell(struct tracer *tr, double *xp, double *xm, double phi_max){
 
-   double r   = Tr->R;
-   double phi = Tr->Phi;
-   double z   = Tr->Z;
+   double r   = tr->R;
+   double phi = tr->Phi;
+   double z   = tr->Z;
 
    if( xm[0] < r && r < xp[0] ){
 	if( xm[2] < z && z < xp[2]){
-	     if( check_phi(phi, xp[1], xm[1], phi_max) ){
+	     if( check_phi(phi, xp[1], xp[1]-xm[1], phi_max) ){
 		return 1;
 	     }
 	}
@@ -84,14 +77,14 @@ void test_cell_vel( struct tracer *tr, struct cell *c ){
 	tr->Type  = 3;
 	check1 = 1;
    }
-   if( c->prim[UPP] != c->prim[UPP] ){
+   if( isnan(c->prim[UPP]) ){
 	tr->Vr    = 0;
         tr->Omega = 0;
         tr->Vz    = 0;
         tr->Type  = 4;
 	check2 = 1;
    }
-   if( c->prim[UZZ] != c->prim[UZZ] ){
+   if( isnan(c->prim[UZZ]) ){
 	tr->Vr    = 0;
         tr->Omega = 0;
         tr->Vz    = 0;
@@ -128,7 +121,7 @@ void get_local_vel(struct tracer *tr, struct cell *c){
    }
 }
 
-struct cell * get_tracer_cell(struct domain *theDomain, struct tracer *aTracer){
+struct cell * get_tracer_cell(struct domain *theDomain, struct tracer *tr){
 
    struct cell **theCells = theDomain->theCells;
    int Nr = theDomain->Nr;
@@ -152,7 +145,7 @@ struct cell * get_tracer_cell(struct domain *theDomain, struct tracer *aTracer){
 		double phim = phip - c->dphi;
 		double xp[3] = {rp, phip, zp};
 		double xm[3] = {rm, phim, zm};
-		if( check_in_cell(aTracer, xp, xm, phi_max) ){
+		if( check_in_cell(tr, xp, xm, phi_max) ){
 			return c;
 		}
 	   }
@@ -162,7 +155,6 @@ struct cell * get_tracer_cell(struct domain *theDomain, struct tracer *aTracer){
 
 }
 
-//void clean_pi(struct domain * );
 
 void moveTracers(struct domain *theDomain, struct tracer *tr, double dt){
 
@@ -220,12 +212,12 @@ void tracer_RK_adjust( struct planet * pl , double RK ){
 void updateTracers(struct domain *theDomain, double dt){
  
    int Ntr = theDomain->Ntr;
-   int tr;
-   for( tr=0 ; tr<Ntr ; ++tr){
-	struct cell *c = get_tracer_cell( theDomain, theDomain->theTracers + tr);
-	get_local_vel( theDomain->theTracers + tr, c);
-	//test_cell_vel( c,  );
-        moveTracers(theDomain, theDomain->theTracers + tr, dt);
+   int n;
+   for( n=0 ; n<Ntr ; ++n){
+	struct tracer *tr = theDomain->theTracers + n;
+	struct cell   *c  = get_tracer_cell( theDomain , tr );
+	get_local_vel( tr , c );
+        moveTracers( theDomain , tr , dt );
    }
    
 }
