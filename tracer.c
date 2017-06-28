@@ -30,15 +30,6 @@ void initializeTracers( struct domain *theDomain ){
 
 }
 
-void clean_pi_tr( struct tracer *tr, double phi_max ){
-
-   double phi = tr->Phi;
-   while( phi > phi_max ){
-	 phi -= phi_max;
-   }
-   tr->Phi = phi;
-}
-
 
 int check_phi(double phi, double phip, double dphi, double phi_max){
 
@@ -163,13 +154,10 @@ void moveTracers(struct domain *theDomain, struct tracer *tr, double dt){
    double rmax = theDomain->theParList.rmax;
    double zmin = theDomain->theParList.zmin;
    double zmax = theDomain->theParList.zmax;
-   double phi_max = theDomain->phi_max;
 
    double r = tr->R;
    double phi = tr->Phi;
    double z = tr->Z;
-
-  // double k1, k2;
 
    r += tr->Vr*dt;
    if( r > rmax ) r = 0.0/0.0;
@@ -184,7 +172,6 @@ void moveTracers(struct domain *theDomain, struct tracer *tr, double dt){
 
    phi += tr->Omega*dt;
    tr->Phi = phi;
-   clean_pi_tr(tr, phi_max);
 }
 
 

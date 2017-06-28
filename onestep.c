@@ -79,11 +79,13 @@ void onestep( struct domain * theDomain , double RK , double dt , int first_step
       adjust_RK_planets( theDomain , RK );
       movePlanets( theDomain->thePlanets , theDomain->t , dt );
    }
-   clean_pi( theDomain );
-   calc_dp( theDomain );
 
    adjust_RK_tracers( theDomain , RK );
    updateTracers( theDomain, dt );
+
+   clean_pi( theDomain );
+   calc_dp( theDomain );
+
 
 
    if( bflag && theDomain->theParList.CT ){

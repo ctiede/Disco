@@ -32,16 +32,17 @@ void clean_pi( struct domain * theDomain ){
       while( phi < 0.0     ){ phi += phi_max; pl->RK_phi += phi_max; }
       pl->phi = phi;
    }
-/*
+
    int Ntr = theDomain->Ntr;
-   int tr;
-   for( tr=0; tr<Ntr; ++tr){
-      struct tracer *t = theDomain->theTracers + tr;
-      double phi = t->Phi;
-      while( phi > phi_max ){ phi -= phi_max; }
-      t->Phi = phi;
+   int n;
+   for( n=0; n<Ntr; ++n){
+      struct tracer *tr = theDomain->theTracers + n;
+      double phi = tr->Phi;
+      while( phi > phi_max ){ phi -= phi_max; tr->RK_phi -= phi_max; }
+      while( phi < 0.0     ){ phi += phi_max; tr->RK_phi += phi_max; }
+      tr->Phi = phi;
    }
-*/
+
 }
 
 double mindt( double * , double , double * , double * );
