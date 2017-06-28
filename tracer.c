@@ -187,7 +187,7 @@ void moveTracers(struct domain *theDomain, struct tracer *tr, double dt){
    clean_pi_tr(tr, phi_max);
 }
 
-/*
+
 void tracer_RK_copy( struct tracer * tr ){
    tr->RK_r     = tr->R;
    tr->RK_phi   = tr->Phi;
@@ -197,7 +197,7 @@ void tracer_RK_copy( struct tracer * tr ){
    tr->RK_vz	= tr->Vz;
 }
 
-void tracer_RK_adjust( struct planet * pl , double RK ){
+void tracer_RK_adjust( struct tracer * tr , double RK ){
    tr->R     = (1.-RK)*tr->R     + RK*tr->RK_r;
    tr->Phi   = (1.-RK)*tr->Phi   + RK*tr->RK_phi;
    tr->Z     = (1.-RK)*tr->Z     + RK*tr->RK_z;
@@ -205,8 +205,6 @@ void tracer_RK_adjust( struct planet * pl , double RK ){
    tr->Omega = (1.-RK)*tr->Omega + RK*tr->RK_omega;
    tr->Vz    = (1.-RK)*tr->Vz    + RK*tr->RK_vz;
 }
-*/
-
 
 
 void updateTracers(struct domain *theDomain, double dt){
