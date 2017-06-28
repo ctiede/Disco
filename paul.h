@@ -52,6 +52,8 @@ struct param_list{
    double Drift_Rate,Drift_Exp;
    int alpha_flag;
 
+   int num_tracers;
+
    int restart_flag;
    int CT;
 

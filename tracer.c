@@ -2,7 +2,9 @@
 
 void setTracerParams( struct domain * theDomain){
 
-   theDomain->Ntr = 2000;
+     theDomain->Ntr = theDomain->theParList.num_tracers;
+     //theDomain->Ntr = 2000;
+
 }
 
 void initializeTracers( struct domain *theDomain ){
