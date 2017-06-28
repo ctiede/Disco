@@ -1,7 +1,7 @@
 
 #include "paul.h"
 
-void AMR( struct domain * ); 
+void AMR( struct domain * );
 void move_BCs( struct domain * , double );
 
 void clean_pi( struct domain * );
@@ -9,6 +9,7 @@ void set_wcell( struct domain * );
 
 void adjust_RK_cons( struct domain * , double );
 void adjust_RK_planets( struct domain * , double );
+void adjust_RK_tracers( struct domain * , double );
 void move_cells( struct domain * , double );
 void calc_dp( struct domain * );
 void calc_prim( struct domain * );
@@ -39,7 +40,7 @@ void onestep( struct domain * theDomain , double RK , double dt , int first_step
 
    int Nz = theDomain->Nz;
    int bflag = set_B_flag();
- 
+
    if( first_step ) set_wcell( theDomain );
    adjust_RK_cons( theDomain , RK );
 
@@ -80,6 +81,10 @@ void onestep( struct domain * theDomain , double RK , double dt , int first_step
    clean_pi( theDomain );
    calc_dp( theDomain );
 
+   adjust_RK_tracers( theDomain , RK );
+   updateTracers( theDomain, dt );
+
+
    if( bflag && theDomain->theParList.CT ){
       B_faces_to_cells( theDomain , 1 );
    }
@@ -102,4 +107,3 @@ void onestep( struct domain * theDomain , double RK , double dt , int first_step
    if( theDomain->theFaces_2 ) free( theDomain->theFaces_2 );
 
 }
-
