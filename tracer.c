@@ -190,16 +190,9 @@ void moveTracers(struct domain *theDomain, struct tracer *tr, double dt){
    tr->R = r;
    tr->Z = z;
 
-<<<<<<< HEAD
-   phi += aTracer->Omega*dt;
-   aTracer->Phi = phi;
-   clean_pi_tr(theDomain);
-=======
    phi += tr->Omega*dt;
    tr->Phi = phi;
    clean_pi_tr(tr, phi_max);
->>>>>>> f1de7e9b0001a0e8d7d49fb61ae1fd09163eaee3
-
 }
 
 /*
