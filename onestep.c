@@ -27,6 +27,7 @@ void check_flipped( struct domain * , int );
 void flip_fluxes( struct domain * , int );
 
 void movePlanets( struct planet * , double , double );
+void updateTracers( struct domain *, double );
 int planet_motion_analytic(void);
 
 void boundary_r( struct domain * );

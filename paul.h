@@ -174,11 +174,19 @@ struct planet{
 
 struct tracer{
    int    Type;
+
    double R;
    double Phi;
    double Z;
    double Vr;
    double Omega;
    double Vz;
+
+   double RK_r;
+   double RK_phi;
+   double RK_z;
+   double RK_vr;
+   double RK_omega;
+   double RK_vz;
 
 };

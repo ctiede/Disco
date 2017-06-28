@@ -191,7 +191,7 @@ void moveTracers(struct domain *theDomain, struct tracer *tr, double dt){
 void tracer_RK_copy( struct tracer * tr ){
    tr->RK_r     = tr->R;
    tr->RK_phi   = tr->Phi;
-   tr->RK_z	= tr-Z;
+   tr->RK_z	= tr->Z;
    tr->RK_vr	= tr->Vr;
    tr->RK_omega = tr->Omega;
    tr->RK_vz	= tr->Vz;

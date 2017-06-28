@@ -303,7 +303,7 @@ void tracerOutput( struct domain *theDomain ){
    FILE * pFile = fopen(filename, "a");
 
    fprintf(pFile, "%d\nAtoms. Timestep: %d\n", Ntr+1, step);    
-   fprintf(pFile, "%d %f %f %f %f %f  %f %f %f \n", 0, 0,0,0,0,0,0,0,0);
+   fprintf(pFile, "%d %f %f %f %f %f  %f %f %f \n", 0, 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 
    int i;
    for( i=0; i<Ntr; ++i){
