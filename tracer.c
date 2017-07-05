@@ -61,8 +61,7 @@ int check_in_cell(struct tracer *tr, double *xp, double *xm, double phi_max){
 }
 
 void test_cell_vel( struct tracer *tr, struct cell *c ){
-
-
+   
    int check1=0, check2=0, check3=0;
    if( isnan(c->prim[URR]) ){
 	tr->Vr 	  = 0;
