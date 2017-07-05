@@ -19,16 +19,37 @@ void initializeTracers( struct domain *theDomain ){
    double phimax = theParamList.phimax;
 
    srand(theDomain->rank);
+   rand();
+
    int Ntr = theDomain->Ntr;
    int n;
    for( n=0; n<Ntr; ++n ){
-	struct tracer *tr = theDomain->theTracers+n;
-        double r = rmin + ((double)rand()/(double)RAND_MAX)*dr;
-	double z = zmin + ((double)rand()/(double)RAND_MAX)*dz;
-	double phi = ((double)rand()/(double)RAND_MAX)*phimax;
-	tr->R = r; tr->Z = z; tr->Phi = phi;
-        tr->Type = 0;
+     struct tracer *tr = theDomain->theTracers+n;
+     double r = rmin + ((double)rand()/(double)RAND_MAX)*dr;
+     double z = zmin + ((double)rand()/(double)RAND_MAX)*dz;
+     double phi = ((double)rand()/(double)RAND_MAX)*phimax;
+     tr->R = r; tr->Z = z; tr->Phi = phi;
+     tr->Type = 0;
    }
+}
+
+int getN0( int , int , int )
+
+void distributeTracers( struct domain *theDomain){
+  //Distributes tracers to their appropriate processes (rather tells processors to only track its tracers)
+  int Num_R = theDomain->theParList.Num_R;
+  int Num_Z = theDomain->theParList.Num_Z;
+  int * dim_rank = theDomain->dim_rank;
+  int * dim_size = theDomain->dim_size;
+
+  int N0r = getN0( dim_rank[0]   , dim_size[0] , Num_R );
+  int N1r = getN0( dim_rank[0]+1 , dim_size[0] , Num_R );
+
+  int N0z = getN0( dim_rank[1]   , dim_size[1] , Num_Z );
+  int N1z = getN0( dim_rank[1]+1 , dim_size[1] , Num_Z );
+
+
+
 
 }
 
@@ -39,7 +60,7 @@ int check_phi(double phi, double phip, double dphi, double phi_max){
    while( phic >  phi_max/2.0 ){ phic -= phi_max; }
    while( phic < -phi_max/2.0 ){ phic += phi_max; }
    if( -dphi<phic && phic<0 ){ return 1; }
-   else{ return 0; } 
+   else{ return 0; }
 
 }
 
@@ -57,7 +78,6 @@ int check_in_cell(struct tracer *tr, double *xp, double *xm, double phi_max){
 	}
    }
    return 0;
-
 }
 
 void test_cell_vel( struct tracer *tr, struct cell *c ){

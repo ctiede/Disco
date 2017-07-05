@@ -42,8 +42,10 @@ void setupDomain( struct domain * theDomain ){
    //initialize tracers
    setTracerParams( theDomain );
    int Ntr = theDomain->Ntr;
-   theDomain->theTracers = (struct tracer *) malloc( Ntr*sizeof(struct tracer) );
-   initializeTracers( theDomain );
+   theDomain->theTracers = (struct tracer *) malloc( Ntr*sizeof(struct tracer) ); //better wasy to allocate memory across processors?
+   if( theDomain->rank==0 )                                                       //->have set of functions that edit memory allocation per process?
+    initializeTracers( theDomain );
+  distributeTracers( theDomain );
 
    int num_tools = num_diagnostics();
    theDomain->num_tools = num_tools;
@@ -302,7 +304,7 @@ void tracerOutput( struct domain *theDomain ){
    }
    FILE * pFile = fopen(filename, "a");
 
-   fprintf(pFile, "%d\nAtoms. Timestep: %d\n", Ntr+1, step);    
+   fprintf(pFile, "%d\nAtoms. Timestep: %d\n", Ntr+1, step);
    fprintf(pFile, "%d %f %f %f %f %f  %f %f %f \n", 0, 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 
    int i;
