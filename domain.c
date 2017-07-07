@@ -44,8 +44,8 @@ void setupDomain( struct domain * theDomain ){
    int Ntr = theDomain->Ntr;
    theDomain->theTracers = (struct tracer *) malloc( Ntr*sizeof(struct tracer) ); //better wasy to allocate memory across processors?
    if( theDomain->rank==0 )                                                       //->have set of functions that edit memory allocation per process?
-    initializeTracers( theDomain );
-  distributeTracers( theDomain );
+      initializeTracers( theDomain );
+   distributeTracers( theDomain );
 
    int num_tools = num_diagnostics();
    theDomain->num_tools = num_tools;
