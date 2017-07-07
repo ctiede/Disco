@@ -42,6 +42,7 @@ void setupDomain( struct domain * theDomain ){
    //initialize tracers
    setTracerParams( theDomain );
    int Ntr = theDomain->Ntr;
+
    theDomain->theTracers = (struct tracer *) malloc( Ntr*sizeof(struct tracer) ); //better wasy to allocate memory across processors?
    if( theDomain->rank==0 )                                                       //->have set of functions that edit memory allocation per process?
       initializeTracers( theDomain );
@@ -293,7 +294,7 @@ void possiblyOutput( struct domain * theDomain , int override ){
 void tracerOutput( struct domain *theDomain ){
 
    char filename[256];
-   sprintf(filename, "%s.xyz", "tracerTest" );
+   sprintf(filename, "%s.xyz", "isoWave" );
 
    int Ntr = theDomain->Ntr;
    int step = theDomain->mdStep;
