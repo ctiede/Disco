@@ -32,6 +32,7 @@ void initializeTracers( struct domain *theDomain ){
    }
 }
 
+/*
 int getN0( int , int , int );
 
 void distributeTracers( struct domain *theDomain){
@@ -62,13 +63,13 @@ void distributeTracers( struct domain *theDomain){
    double xm[3] = {rm, 0.0, zm};
    
 
- /*
-      Finish giving each process it's list of tracers
-*/
+ 
+//   Finish giving each process it's list of tracers
 
 
 }
 
+*/
 
 int check_phi(double phi, double phip, double dphi, double phi_max){
 
