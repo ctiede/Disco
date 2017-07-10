@@ -2,11 +2,18 @@
 
 void setTracerParams( struct domain * theDomain){
 
-     theDomain->Ntr = theDomain->theParList.num_tracers;
+     int num_tracers = theDomain->theParList.num_tracers;
+     int size = theDomain->size;
+     theDomain->Ntr = num_tracers/size;   //crude round-down for now
      //theDomain->Ntr = 2000;
 }
 
-void initializeTracers( struct domain *theDomain ){
+getRandIn( double xmin, double dx){
+
+  return xmin + ( (double)rand()/(double)RAND_MAX )*dx;
+}
+
+void initTracers_Rand( struct domain *theDomain ){  //randomly init tracers in serial
 
    struct param_list theParamList = theDomain->theParList;
    double rmin = theParamList.rmin;
@@ -24,9 +31,9 @@ void initializeTracers( struct domain *theDomain ){
    int n;
    for( n=0; n<Ntr; ++n ){
      struct tracer *tr = theDomain->theTracers+n;
-     double r = rmin + ((double)rand()/(double)RAND_MAX)*dr;
-     double z = zmin + ((double)rand()/(double)RAND_MAX)*dz;
-     double phi = ((double)rand()/(double)RAND_MAX)*phimax;
+     double r = getRandIn( rmin, dr );
+     double z = getRandIn( zmin, dz );
+     double phi = getRandIn( 0.0, phimax );
      tr->R = r; tr->Z = z; tr->Phi = phi;
      tr->Type = 0;
    }
@@ -35,8 +42,52 @@ void initializeTracers( struct domain *theDomain ){
 /*
 int getN0( int , int , int );
 
+void initializeTracers( struct domain *theDomain ){
+
+//----Put this into a function? -> give theDomain vars N0r, N0z, delR, delZ?----
+   int Num_R = theDomain->theParList.Num_R;
+   int Num_Z = theDomain->theParList.Num_Z;
+   int phi_max = theDomain->theParList.phimax;
+   int *dim_rank = theDomain->dim_rank;
+   int *dim_size = theDomain->dim_size;
+
+   int N0r = getN0( dim_rank[0], dim_size[0], Num_R );
+   int N1r = getN0( dim_rank[0]+1, dim_size[0], Num_R);
+   int Nr = N1r - N0r;
+
+   int N0z = getN0( dim_rank[1], dim_size[1], Num_Z );
+   int N1z = getN0( dim_rank[1]+1, dim_size[1], Num_Z);
+   int Nz = N1z - N0zi;
+
+   double dr = 1.0/(double)Num_R;
+   double r0 = (double)N0r*dr;
+   double delr = Nr*dr;
+
+   double dz = 1./(double)Num_Z;
+   double z0 = (double)N0z*dz;
+   double delz = Nz*dz;
+//------------------------------------------------------------------------------
+
+  srand(theDomain->rank);
+  rand();
+  
+  double r, z, phi;
+  struct tracerList *theList = theDomain->theTracers;
+  struct tracer *tr = theList->head;
+  while( tr != NULL){
+    r = getRandIn(r0, delr);
+    z = getRandIn(z0, delz);
+    phi = getRandIn(0, phi_max);
+    tr->R = r; tr->Z = z; tr->Phi = phi;
+    tr->Type = 0;
+    tr = tr->next;
+  }
+
+}
+
+/*
 void distributeTracers( struct domain *theDomain){
-   //Distributes tracers to their appropriate processes 
+   //Distributes tracers to their appropriate processes
   //(rather tells processors to only track its tracers)
 
    int Num_R = theDomain->theParList.Num_R;
@@ -61,15 +112,12 @@ void distributeTracers( struct domain *theDomain){
 
    double xp[3] = {rp, phi_max, zp};
    double xm[3] = {rm, 0.0, zm};
+
+   //Finish giving each process it's list of tracers
    
-
- 
-//   Finish giving each process it's list of tracers
-
-
 }
-
 */
+
 
 int check_phi(double phi, double phip, double dphi, double phi_max){
 
@@ -98,7 +146,7 @@ int check_in_cell(struct tracer *tr, double *xp, double *xm, double phi_max){
 }
 
 void test_cell_vel( struct tracer *tr, struct cell *c ){
-   
+
    int check1=0, check2=0, check3=0;
    if( isnan(c->prim[URR]) ){
 	tr->Vr 	  = 0;
