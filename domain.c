@@ -18,6 +18,8 @@ void setHlldParams( struct domain * );
 void setDiskParams( struct domain * );
 void setOmegaParams( struct domain * );
 
+void build_tracerList( struct domain * );
+
 int get_num_rzFaces( int , int , int );
 
 void setupDomain( struct domain * theDomain ){
@@ -42,9 +44,10 @@ void setupDomain( struct domain * theDomain ){
    //initialize tracers
    setTracerParams( theDomain );
    int Ntr = theDomain->Ntr;
-   theDomain->theTracers = (struct tracer *) malloc( Ntr*sizeof(struct tracer) );
-   initializeTracers( theDomain );  //give every process all the tracers
-   distributeTracers( theDomain );  //build list of local traceres 
+   //theDomain->theTracers = (struct tracer *) malloc( Ntr*sizeof(struct tracer) );
+   theDomain->theTracers = (struct tracerList *) malloc( sizeof(struct tracerList) );
+   init_tracerList( theDomain );  //initialize each processor's tracer list
+   initializeTracers( theDomain );  //initialize tracers on each process
 
    int num_tools = num_diagnostics();
    theDomain->num_tools = num_tools;
