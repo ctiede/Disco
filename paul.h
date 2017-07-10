@@ -17,7 +17,7 @@ enum{C_FIXED,C_WCELL,C_WRIEMANN};
 #define NUM_G 2
 
 //Magnetic field tracking things.  Can be set to zero if there is no MHD.
-#define NUM_EDGES 0    //0, 4 or 8 
+#define NUM_EDGES 0    //0, 4 or 8
 #define NUM_FACES 0    //0, 3 or 5
 #define NUM_AZ_EDGES 0 //0, 0 or 4
 
@@ -70,7 +70,8 @@ struct domain{
    struct face * theFaces_1;
    struct face * theFaces_2;
    struct planet * thePlanets;
-   struct tracer * theTracers;
+   struct tracer * theTracers;   //need this? or just make it the head?
+   struct tracer * head;        //pointer to start of linked list of tracers
    int * Np;
    int Nr,Nz,Ng;
    int N_ftracks_r;
@@ -159,7 +160,7 @@ struct face{
 
 struct planet{
    double r;
-   double phi; 
+   double phi;
    double M;
    double omega;
    double vr;
@@ -190,5 +191,9 @@ struct tracer{
    double RK_vr;
    double RK_omega;
    double RK_vz;
+
+   //Pointers to neighbors in linked list of tracers
+   struct tracer *next;
+   struct tracer *prev;
 
 };

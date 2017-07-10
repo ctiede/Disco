@@ -42,11 +42,9 @@ void setupDomain( struct domain * theDomain ){
    //initialize tracers
    setTracerParams( theDomain );
    int Ntr = theDomain->Ntr;
-
-   theDomain->theTracers = (struct tracer *) malloc( Ntr*sizeof(struct tracer) ); //better wasy to allocate memory across processors?
-   if( theDomain->rank==0 )                                                       //->have set of functions that edit memory allocation per process?
-      initializeTracers( theDomain );
-   distributeTracers( theDomain );
+   theDomain->theTracers = (struct tracer *) malloc( Ntr*sizeof(struct tracer) );
+   initializeTracers( theDomain );  //give every process all the tracers
+   distributeTracers( theDomain );  //build list of local traceres 
 
    int num_tools = num_diagnostics();
    theDomain->num_tools = num_tools;

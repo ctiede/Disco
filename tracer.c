@@ -4,7 +4,6 @@ void setTracerParams( struct domain * theDomain){
 
      theDomain->Ntr = theDomain->theParList.num_tracers;
      //theDomain->Ntr = 2000;
-
 }
 
 void initializeTracers( struct domain *theDomain ){
@@ -33,7 +32,7 @@ void initializeTracers( struct domain *theDomain ){
    }
 }
 
-int getN0( int , int , int )
+int getN0( int , int , int );
 
 void distributeTracers( struct domain *theDomain){
   //Distributes tracers to their appropriate processes (rather tells processors to only track its tracers)
@@ -48,7 +47,9 @@ void distributeTracers( struct domain *theDomain){
   int N0z = getN0( dim_rank[1]   , dim_size[1] , Num_Z );
   int N1z = getN0( dim_rank[1]+1 , dim_size[1] , Num_Z );
 
-
+ /*
+      Finish giving each process it's list of tracers
+*/
 
 
 }
