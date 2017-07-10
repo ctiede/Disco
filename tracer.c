@@ -35,17 +35,32 @@ void initializeTracers( struct domain *theDomain ){
 int getN0( int , int , int );
 
 void distributeTracers( struct domain *theDomain){
-  //Distributes tracers to their appropriate processes (rather tells processors to only track its tracers)
-  int Num_R = theDomain->theParList.Num_R;
-  int Num_Z = theDomain->theParList.Num_Z;
-  int * dim_rank = theDomain->dim_rank;
-  int * dim_size = theDomain->dim_size;
+   //Distributes tracers to their appropriate processes 
+  //(rather tells processors to only track its tracers)
 
-  int N0r = getN0( dim_rank[0]   , dim_size[0] , Num_R );
-  int N1r = getN0( dim_rank[0]+1 , dim_size[0] , Num_R );
+   int Num_R = theDomain->theParList.Num_R;
+   int Num_Z = theDomain->theParList.Num_Z;
+   int * dim_rank = theDomain->dim_rank;
+   int * dim_size = theDomain->dim_size;
+   double phi_max = theDomain->phi_max;
 
-  int N0z = getN0( dim_rank[1]   , dim_size[1] , Num_Z );
-  int N1z = getN0( dim_rank[1]+1 , dim_size[1] , Num_Z );
+   int N0r = getN0( dim_rank[0]   , dim_size[0] , Num_R );
+   int N1r = getN0( dim_rank[0]+1 , dim_size[0] , Num_R );
+
+   int N0z = getN0( dim_rank[1]   , dim_size[1] , Num_Z );
+   int N1z = getN0( dim_rank[1]+1 , dim_size[1] , Num_Z );
+
+   double dr = 1./(double)Num_R;
+   double rm = (double)N0r * dr;
+   double rp = (double)N1r * dr;
+
+   double dz = 1./(double)Num_Z;
+   double zm = (double)N0z * dz;
+   double zp = (double)N1z * dz;
+
+   double xp[3] = {rp, phi_max, zp};
+   double xm[3] = {rm, 0.0, zm};
+   
 
  /*
       Finish giving each process it's list of tracers
@@ -155,13 +170,13 @@ struct cell * get_tracer_cell(struct domain *theDomain, struct tracer *tr){
 	   double zm = z_kph[k-1];
 	   double zp = z_kph[k];
 	   for( i=0; i<Np[jk]; ++i){
-		struct cell *c = &(theCells[jk][i]);
-		double phip = c->piph;
-		double phim = phip - c->dphi;
-		double xp[3] = {rp, phip, zp};
-		double xm[3] = {rm, phim, zm};
-		if( check_in_cell(tr, xp, xm, phi_max) ){
-			return c;
+	   	struct cell *c = &(theCells[jk][i]);
+	   	double phip = c->piph;
+		   double phim = phip - c->dphi;
+		   double xp[3] = {rp, phip, zp};
+		   double xm[3] = {rm, phim, zm};
+		   if( check_in_cell(tr, xp, xm, phi_max) ){
+			   return c;
 		}
 	   }
 	}
