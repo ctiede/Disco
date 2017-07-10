@@ -43,8 +43,8 @@ void setupDomain( struct domain * theDomain ){
    setTracerParams( theDomain );
    int Ntr = theDomain->Ntr;
    theDomain->theTracers = (struct tracer *) malloc( Ntr*sizeof(struct tracer) );
-   initializeTracers( theDomain );
-   distributeTracers( theDomain );
+   initializeTracers( theDomain );  //give every process all the tracers
+   distributeTracers( theDomain );  //build list of local traceres 
 
    int num_tools = num_diagnostics();
    theDomain->num_tools = num_tools;
