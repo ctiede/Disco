@@ -21,12 +21,12 @@ void init_tracerList( struct domain *theDomain ){
 
    double dr = 1.0/(double)Num_R;
    double r0 = (double)N0r*dr;
-   double delR = Nr*dr;
+   double delr = Nr*dr;
 
    double dz = 1./(double)Num_Z;
    double z0 = (double)N0z*dz;
-   double delZ = Nz*dz;
-//-----------Save these things in gridsetup.c------------------------------------------------
+   double delz = Nz*dz;
+//------------------------------------------------------------------------------
 
    srand(theDomain->rank);
    rand();
@@ -42,7 +42,7 @@ void init_tracerList( struct domain *theDomain ){
    for( n=0; n<Ntr; ++n){     //create linked list of Ntr tracers
       addTracer( theList );
    }
-   
+
 }
 
 void addTracer( *theList ){
