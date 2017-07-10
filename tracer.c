@@ -8,11 +8,12 @@ void setTracerParams( struct domain * theDomain){
      //theDomain->Ntr = 2000;
 }
 
-getRandIn( double xmin, double dx){
+int getRandIn( double xmin, double dx){
 
   return xmin + ( (double)rand()/(double)RAND_MAX )*dx;
 }
 
+/*
 void initTracers_Rand( struct domain *theDomain ){  //randomly init tracers in serial
 
    struct param_list theParamList = theDomain->theParList;
@@ -38,8 +39,8 @@ void initTracers_Rand( struct domain *theDomain ){  //randomly init tracers in s
      tr->Type = 0;
    }
 }
+*/
 
-/*
 int getN0( int , int , int );
 
 void initializeTracers( struct domain *theDomain ){
@@ -57,7 +58,7 @@ void initializeTracers( struct domain *theDomain ){
 
    int N0z = getN0( dim_rank[1], dim_size[1], Num_Z );
    int N1z = getN0( dim_rank[1]+1, dim_size[1], Num_Z);
-   int Nz = N1z - N0zi;
+   int Nz = N1z - N0z;
 
    double dr = 1.0/(double)Num_R;
    double r0 = (double)N0r*dr;
@@ -282,13 +283,11 @@ void tracer_RK_adjust( struct tracer * tr , double RK ){
 
 void updateTracers(struct domain *theDomain, double dt){
 
-   int Ntr = theDomain->Ntr;
-   int n;
-   for( n=0 ; n<Ntr ; ++n){
-	struct tracer *tr = theDomain->theTracers + n;
-	struct cell   *c  = get_tracer_cell( theDomain , tr );
-	get_local_vel( tr , c );
-        moveTracers( theDomain , tr , dt );
+   struct tracer *tr = theDomain->theTracers->head;
+   while( tr!=NULL ){
+   	struct cell   *c  = get_tracer_cell( theDomain , tr );
+	   get_local_vel( tr , c );
+      moveTracers( theDomain , tr , dt );
    }
 
 }

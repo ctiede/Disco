@@ -33,14 +33,13 @@ void clean_pi( struct domain * theDomain ){
       pl->phi = phi;
    }
 
-   int Ntr = theDomain->Ntr;
-   int n;
-   for( n=0; n<Ntr; ++n){
-      struct tracer *tr = theDomain->theTracers + n;
+   struct tracer *tr = theDomain->theTracers->head;
+   while( tr!=NULL ){
       double phi = tr->Phi;
       while( phi > phi_max ){ phi -= phi_max; tr->RK_phi -= phi_max; }
       while( phi < 0.0     ){ phi += phi_max; tr->RK_phi += phi_max; }
       tr->Phi = phi;
+      tr = tr->next;
    }
 
 }
@@ -268,10 +267,11 @@ void adjust_RK_planets( struct domain * theDomain , double RK ){
 void tracer_RK_adjust( struct tracer * , double);
 
 void adjust_RK_tracers( struct domain *theDomain , double RK){
-  int Ntr = theDomain->Ntr;
-  int n;
-  for( n=0 ; n<Ntr; ++n ){
-     tracer_RK_adjust( theDomain->theTracers+n , RK );
+
+   struct tracer *tr = theDomain->theTracers->head;
+   while( tr!= NULL ){
+     tracer_RK_adjust( tr , RK );
+     tr = tr->next;
   }
 }
 

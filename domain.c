@@ -6,6 +6,7 @@ double get_dV( double * , double * );
 
 int num_diagnostics( void );
 void initializePlanets( struct planet * );
+void init_tracerList( struct domain * );
 void initializeTracers( struct domain * );
 
 void setICparams( struct domain * );
@@ -43,7 +44,7 @@ void setupDomain( struct domain * theDomain ){
 
    //initialize tracers
    setTracerParams( theDomain );
-   int Ntr = theDomain->Ntr;
+   //int Ntr = theDomain->Ntr;
    //theDomain->theTracers = (struct tracer *) malloc( Ntr*sizeof(struct tracer) );
    theDomain->theTracers = (struct tracerList *) malloc( sizeof(struct tracerList) );
    init_tracerList( theDomain );  //initialize each processor's tracer list
@@ -309,19 +310,19 @@ void tracerOutput( struct domain *theDomain ){
    fprintf(pFile, "%d\nAtoms. Timestep: %d\n", Ntr+1, step);
    fprintf(pFile, "%d %f %f %f %f %f  %f %f %f \n", 0, 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 
-   int i;
-   for( i=0; i<Ntr; ++i){
-	struct tracer *tr = theDomain->theTracers + i;
-	int type = tr->Type;
-	double r = tr->R;
-	double phi = tr->Phi;
-	double z = tr->Z;
-	double x = r*cos(phi);
-	double y = r*sin(phi);
-	double vr = tr->Vr;
-	double om = tr->Omega;
-	double vz = tr->Vz;
-	fprintf(pFile, "%d %f %f %f %f %f  %f %f %f \n", type,x,y,z,r,phi, vr,om,vz);
+   struct tracer *tr = theDomain->theTracers->head;   
+   while( tr != NULL){
+	   int type = tr->Type;
+	   double r = tr->R;
+   	double phi = tr->Phi;
+   	double z = tr->Z;
+	   double x = r*cos(phi);
+   	double y = r*sin(phi);
+   	double vr = tr->Vr;
+	   double om = tr->Omega;
+   	double vz = tr->Vz;
+	   fprintf(pFile, "%d %f %f %f %f %f  %f %f %f \n", type,x,y,z,r,phi, vr,om,vz);
+      tr = tr->next;
    }
 
    step++;
