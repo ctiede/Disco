@@ -4,7 +4,7 @@ int getN0( int, int, int );
 
 void init_tracerList( struct domain *theDomain ){
 
-//--------Put this into a function -> give theDomain vars N0r, N0z, delR, delZ------------------  
+//--------Put this into a function -> give theDomain vars N0r, N0z, delR, delZ------------------
    int Num_R = theDomain->theParList.Num_R;
    int Num_Z = theDomain->theParList.Num_Z;
    int phi_max = theDomain->theParList.phimax;
@@ -37,25 +37,12 @@ void init_tracerList( struct domain *theDomain ){
    //struct tracer tr[Ntr];           //array of tracers for initializing
    //struct tracer *temp = &tr[0];
    theList->head = NULL;
-   
+
    int n;
    for( n=0; n<Ntr; ++n){     //create linked list of Ntr tracers
       addTracer( theList );
-   } 
-
-/*   
-   int n;
-   double r, phi, z;
-   for( n=0; n<Ntr; ++n ){
-      r = r0 + ( (double)rand()/(double)RAND_MAX )*delR;
-      z = z0 + ( (double)rand()/(double)RAND_MAX )*delZ;
-      phi = ( (double)rand()/(double)RAND_MAX )*phi_max;          ------> Move this all to initTracers
-      tr[n].R = r; tr[n].Z = z; tr[n].Phi = phi;
-      tr[n].Type = 0;
-
-      tr[n].next = &tr[n+1];
    }
-*/
+   
 }
 
 void addTracer( *theList ){
