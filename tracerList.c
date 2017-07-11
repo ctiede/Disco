@@ -2,11 +2,11 @@
 
 int getN0( int, int, int );
 
-void addTracer( *theList ){
+void addTracer( struct tracerList *theList ){
 
    struct tracer *temp = theList->head;
    struct tracer tr = {0};
-   theList->head = tr;
+   theList->head = &tr;
    tr.next = temp;
 }
 
@@ -23,11 +23,11 @@ void init_tracerList( struct domain *theDomain ){
 
 }
 
-int getListSize( *theList ){
+int getListSize( struct tracerList *theList ){
 
    int size = 0;
    struct tracer *tr = theList->head;
-   while( tmp != NULL){
+   while( tr != NULL){
       size++;
       tr = tr->next;
    }
