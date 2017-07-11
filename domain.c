@@ -296,7 +296,7 @@ void possiblyOutput( struct domain * theDomain , int override ){
 void tracerOutput( struct domain *theDomain ){
 
    char filename[256];
-   sprintf(filename, "%s.xyz", "isoWave" );
+   sprintf(filename, "%s.xyz", "tracerList" );
 
    int Ntr = theDomain->Ntr;
    int step = theDomain->mdStep;
