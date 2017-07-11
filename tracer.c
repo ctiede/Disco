@@ -3,8 +3,11 @@
 void setTracerParams( struct domain * theDomain){
 
      int num_tracers = theDomain->theParList.num_tracers;
+     printf("Total Tracers: %d\n", num_tracers);
      int size = theDomain->size;
+     printf("Size: %d\n", size);
      theDomain->Ntr = num_tracers/size;   //crude round-down for now
+     printf("Local Tracers: %d\n", num_tracers/size);
      //theDomain->Ntr = 2000;
 }
 
@@ -79,8 +82,15 @@ void initializeTracers( struct domain *theDomain ){
     r = getRandIn(r0, delr);
     z = getRandIn(z0, delz);
     phi = getRandIn(0, phi_max);
+    printf("Got this far\n");
+    if( NULL==tr )
+       printf("tr is NULL...");
     tr->R = r; tr->Z = z; tr->Phi = phi;
-    tr->Type = 0;
+    tr->Type = 0; tr->rmFlag = 0;
+    if( tr->next==NULL )
+       printf("Tr->Next does NOT exist\n");
+    else
+       printf("Tr->Next DOES exist\n");
     tr = tr->next;
   }
 

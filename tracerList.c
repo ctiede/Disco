@@ -1,13 +1,45 @@
 #include "paul.h"
 
-int getN0( int, int, int );
 
 void addTracer( struct tracerList *theList ){
-
+   //adds tracer to the front of the list
    struct tracer *temp = theList->head;
-   struct tracer tr = {0};
-   theList->head = &tr;
+   struct tracer tr;
    tr.next = temp;
+   theList->head = &tr;
+   theList->size += 1;
+   printf("Added Tracer!");
+}
+
+int getListSize( struct tracerList *theList ){
+
+   int size = 0;
+   struct tracer *tr = theList->head;
+   while( tr!=NULL){
+      size++;
+      printf("Number of items in list: %d\n", size);
+      tr = tr->next;
+   }
+  return size;
+}
+
+void rmTracers( struct tracerList *theList ){
+
+  struct tracer *tr = theList->head;
+  struct tracer *prev = NULL;
+  while( tr!=NULL ){
+      if( tr->rmFlag ){
+         if( prev ){ //if prev has a valid value
+            prev->next = tr->next;
+         }
+         else{       //if prev is NULL, need to repoint head
+            theList->head = tr->next;
+         }
+         free(tr);
+      }
+      prev = tr;
+      tr = tr->next;
+   }
 }
 
 void init_tracerList( struct domain *theDomain ){
@@ -15,22 +47,17 @@ void init_tracerList( struct domain *theDomain ){
    int Ntr = theDomain->Ntr;
    struct tracerList *theList = theDomain->theTracers;
    theList->head = NULL;
+   theList->size = 0;
 
    int n;
+   printf("Trying to create list of %d tracers\n", Ntr);
    for( n=0; n<Ntr; ++n){     //create linked list of Ntr tracers
+      printf("Trying to add tracer\n");
       addTracer( theList );
    }
 
+   printf("Trying to get list size (%d were added)\n", theList->size);
+   int size = getListSize( theList );
+   printf("List Size: %d\n", size);
+
 }
-
-int getListSize( struct tracerList *theList ){
-
-   int size = 0;
-   struct tracer *tr = theList->head;
-   while( tr != NULL){
-      size++;
-      tr = tr->next;
-   }
-  return size;
-}
-

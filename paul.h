@@ -70,8 +70,8 @@ struct domain{
    struct face * theFaces_1;
    struct face * theFaces_2;
    struct planet * thePlanets;
-   struct tracer * theTracers;   //need this? or just make it the head?
-   struct tracer * head;        //pointer to start of linked list of tracers
+   struct tracerList * theTracers;   //object for local linked list of tracers
+   //struct tracer * head;        //pointer to start of linked list of tracers
    int * Np;
    int Nr,Nz,Ng;
    int N_ftracks_r;
@@ -196,4 +196,13 @@ struct tracer{
    struct tracer *next;
    struct tracer *prev;
 
+   //Flag for removal from linked list
+   int rmFlag;
+
+};
+
+struct tracerList{
+   
+   int size;               //size of list
+   struct tracer *head;    //pointer to first tracer in list
 };
