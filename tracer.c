@@ -16,7 +16,9 @@ int getRandIn( double xmin, double dx){
   return xmin + ( (double)rand()/(double)RAND_MAX )*dx;
 }
 
-/*
+
+void printTracerCoords( struct domain * );
+
 void initTracers_Rand( struct domain *theDomain ){  //randomly init tracers in serial
 
    struct param_list theParamList = theDomain->theParList;
@@ -31,18 +33,19 @@ void initTracers_Rand( struct domain *theDomain ){  //randomly init tracers in s
    srand(theDomain->rank);
    rand();
 
-   int Ntr = theDomain->Ntr;
-   int n;
-   for( n=0; n<Ntr; ++n ){
-     struct tracer *tr = theDomain->theTracers+n;
+   struct tracerList *theList = theDomain->theTracers;
+   struct tracer *tr = theList->head;
+   while( tr!=NULL ){
      double r = getRandIn( rmin, dr );
      double z = getRandIn( zmin, dz );
      double phi = getRandIn( 0.0, phimax );
      tr->R = r; tr->Z = z; tr->Phi = phi;
-     tr->Type = 0;
+     tr->Type = 0; tr->rmFlag = 0;
+     tr = tr->next;
    }
+   printTracerCoords( theDomain );
 }
-*/
+
 
 int getN0( int , int , int );
 
@@ -82,18 +85,17 @@ void initializeTracers( struct domain *theDomain ){
     r = getRandIn(r0, delr);
     z = getRandIn(z0, delz);
     phi = getRandIn(0, phi_max);
-    printf("Got this far\n");
-    if( NULL==tr )
-       printf("tr is NULL...");
+    //printf("Got this far\n");
     tr->R = r; tr->Z = z; tr->Phi = phi;
-    tr->Type = 0; tr->rmFlag = 0;
-    if( tr->next==NULL )
+    tr->Type = 0; tr->rmFlag = 0;  
+/*  if( tr->next==NULL )
        printf("Tr->Next does NOT exist\n");
     else
        printf("Tr->Next DOES exist\n");
+*/
     tr = tr->next;
   }
-
+  printTracerCoords( theDomain );
 }
 
 /*
@@ -149,7 +151,7 @@ int check_in_cell(struct tracer *tr, double *xp, double *xm, double phi_max){
    if( xm[0] < r && r < xp[0] ){
 	if( xm[2] < z && z < xp[2]){
 	     if( check_phi(phi, xp[1], xp[1]-xm[1], phi_max) ){
-		return 1;
+   		return 1;
 	     }
 	}
    }
@@ -293,11 +295,13 @@ void tracer_RK_adjust( struct tracer * tr , double RK ){
 
 void updateTracers(struct domain *theDomain, double dt){
 
+   //printf("Trying to update tracers!");
    struct tracer *tr = theDomain->theTracers->head;
    while( tr!=NULL ){
    	struct cell   *c  = get_tracer_cell( theDomain , tr );
 	   get_local_vel( tr , c );
       moveTracers( theDomain , tr , dt );
+      tr = tr->next;
    }
 
 }

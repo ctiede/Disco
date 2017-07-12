@@ -50,7 +50,8 @@ void setupDomain( struct domain * theDomain ){
    printf("Created space for tracerList\n");
    init_tracerList( theDomain );  //initialize each processor's tracer list
    printf("Initialized Tracer List\n");
-   initializeTracers( theDomain );  //initialize tracers on each process
+   //initializeTracers( theDomain );  //initialize tracers on each process
+   initTracers_Rand( theDomain );
    printf("Initialized Tracers\n");
 
    int num_tools = num_diagnostics();

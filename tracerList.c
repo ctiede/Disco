@@ -3,21 +3,22 @@
 
 void addTracer( struct tracerList *theList ){
    //adds tracer to the front of the list
-   struct tracer *temp = theList->head;
-   struct tracer tr;
-   tr.next = temp;
-   theList->head = &tr;
+   struct tracer *tr = (struct tracer *) malloc( sizeof(struct tracer) );
+
+   tr->next = theList->head;
+
+   theList->head = tr;
    theList->size += 1;
-   printf("Added Tracer!");
+   //printf("Added Tracer!\n");
 }
 
 int getListSize( struct tracerList *theList ){
 
    int size = 0;
    struct tracer *tr = theList->head;
-   while( tr!=NULL){
+   while( tr!=NULL ){
       size++;
-      printf("Number of items in list: %d\n", size);
+      //printf("Number of items in list: %d\n", size);
       tr = tr->next;
    }
   return size;
@@ -52,12 +53,27 @@ void init_tracerList( struct domain *theDomain ){
    int n;
    printf("Trying to create list of %d tracers\n", Ntr);
    for( n=0; n<Ntr; ++n){     //create linked list of Ntr tracers
-      printf("Trying to add tracer\n");
+      //printf("Trying to add tracer\n");
       addTracer( theList );
    }
 
    printf("Trying to get list size (%d were added)\n", theList->size);
    int size = getListSize( theList );
    printf("List Size: %d\n", size);
+
+}
+
+void printTracerCoords( struct domain *theDomain ){
+
+   struct tracer *tr = theDomain->theTracers->head;
+
+   int type;
+   double r, z, phi;
+   while ( tr!=NULL ){
+      type = tr->Type;
+      r = tr->R; z = tr->Z; phi = tr->Phi;
+      printf("Type, (r,phi,z): %d, (%f, %f, %f)\n", type, r, phi, z);
+      tr = tr->next;
+   }
 
 }
