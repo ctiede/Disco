@@ -61,8 +61,7 @@ int main( int argc , char * argv[] ){
       check_dt( &theDomain , &dt );
       possiblyOutput( &theDomain , 0 );
       timestep( &theDomain , dt );
-      tracerOutput( &theDomain );    
-
+      tracerOutput( &theDomain );
    }
 
    possiblyOutput( &theDomain , 1 );

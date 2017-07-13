@@ -300,36 +300,49 @@ void possiblyOutput( struct domain * theDomain , int override ){
 void tracerOutput( struct domain *theDomain ){
 
    char filename[256];
-   sprintf(filename, "%s.xyz", "tracerList" );
+   sprintf(filename, "%s.xyz", "tracerParal" );
 
-   int Ntr = theDomain->Ntr;
+   int Ntr_tot = theDomain->Ntr;
    int step = theDomain->mdStep;
+   int rank = theDomain->rank;
+   int size = theDomain->size;
 
-   if( step==0 ){
-	FILE * pFile = fopen(filename, "w");
-	fclose(pFile);
+   MPI_Allreduce( MPI_IN_PLACE, &Ntr_tot, 1, MPI_INT, MPI_SUM, theDomain->theComm );
+
+   if( rank==0 && step==0 ){
+	   FILE * pFile = fopen(filename, "w");
+	   fclose(pFile);
    }
-   FILE * pFile = fopen(filename, "a");
+   MPI_Barrier( theDomain->theComm);
 
-   fprintf(pFile, "%d\nAtoms. Timestep: %d\n", Ntr+1, step);
-   fprintf(pFile, "%d %f %f %f %f %f  %f %f %f \n", 0, 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
-
-   struct tracer *tr = theDomain->theTracers->head;   
-   while( tr != NULL){
-	   int type = tr->Type;
-	   double r = tr->R;
-   	double phi = tr->Phi;
-   	double z = tr->Z;
-	   double x = r*cos(phi);
-   	double y = r*sin(phi);
-   	double vr = tr->Vr;
-	   double om = tr->Omega;
-   	double vz = tr->Vz;
-	   fprintf(pFile, "%d %.4f %.4f %.4f %.4f %.4f  %.4f %.4f %.4f \n", type, x,y,z, r,phi, vr,om,vz);
-      tr = tr->next;
+   int rk;
+   for( rk=0; rk<size; ++rk){
+      //MPI_Barrier( theDomain->theComm );
+      if( rank==rk ){
+         //Open file with positions
+         FILE * pFile = fopen(filename, "a");
+         if( rank==0 ){
+            fprintf(pFile, "%d\nAtoms. Timestep: %d\n", Ntr_tot+1, step);
+            fprintf(pFile, "%d %f %f %f %f %f  %f %f %f \n", 0, 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+         } 
+         struct tracer *tr = theDomain->theTracers->head;   
+         while( tr != NULL){
+   	      int type = tr->Type;
+   	      double r = tr->R;
+      	   double phi = tr->Phi;
+      	   double z = tr->Z;
+      	   double x = r*cos(phi);
+         	double y = r*sin(phi);
+         	double vr = tr->Vr;
+      	   double om = tr->Omega;
+         	double vz = tr->Vz;
+      	   fprintf(pFile, "%d %.4f %.4f %.4f %.4f %.4f  %.4f %.4f %.4f \n", type, x,y,z, r,phi, vr,om,vz);
+            tr = tr->next;
+         }
+         fclose(pFile);
+      }
+      MPI_Barrier( theDomain->theComm );
    }
-
    step++;
    theDomain->mdStep = step;
-   fclose(pFile);
 }
