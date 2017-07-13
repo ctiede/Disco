@@ -69,7 +69,7 @@ void printTracerCoords( struct domain *theDomain ){
 
    int type;
    double r, z, phi;
-   printf("Type, (r, phi, z)");
+   printf("Type, (r, phi, z)\n");
    while ( tr!=NULL ){
       type = tr->Type;
       r = tr->R; z = tr->Z; phi = tr->Phi;

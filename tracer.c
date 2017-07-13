@@ -11,7 +11,7 @@ void setTracerParams( struct domain * theDomain){
      //theDomain->Ntr = 2000;
 }
 
-int getRandIn( double xmin, double dx){
+double getRandIn( double xmin, double dx){
 
   return xmin + ( (double)rand()/(double)RAND_MAX )*dx;
 }
@@ -39,6 +39,7 @@ void initTracers_Rand( struct domain *theDomain ){  //randomly init tracers in s
      double r = getRandIn( rmin, dr );
      double z = getRandIn( zmin, dz );
      double phi = getRandIn( 0.0, phimax );
+     printf("Generated (r,phi,z): %f, %f, %f\n");
      tr->R = r; tr->Z = z; tr->Phi = phi;
      tr->Type = 0; tr->rmFlag = 0;
      tr = tr->next;
