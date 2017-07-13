@@ -39,12 +39,12 @@ void initTracers_Rand( struct domain *theDomain ){  //randomly init tracers in s
      double r = getRandIn( rmin, dr );
      double z = getRandIn( zmin, dz );
      double phi = getRandIn( 0.0, phimax );
-     printf("Generated (r,phi,z): %f, %f, %f\n");
+     //printf("Generated (r,phi,z): %f, %f, %f\n", r, phi, z);
      tr->R = r; tr->Z = z; tr->Phi = phi;
      tr->Type = 0; tr->rmFlag = 0;
      tr = tr->next;
    }
-   printTracerCoords( theDomain );
+   //printTracerCoords( theDomain );
 }
 
 
