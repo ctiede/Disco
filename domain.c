@@ -50,8 +50,8 @@ void setupDomain( struct domain * theDomain ){
    printf("Created space for tracerList\n");
    init_tracerList( theDomain );  //initialize each processor's tracer list
    printf("Initialized Tracer List\n");
-   //initializeTracers( theDomain );  //initialize tracers on each process
-   initTracers_Rand( theDomain );
+   initializeTracers( theDomain );  //initialize tracers on each process
+   //initTracers_Rand( theDomain );
    printf("Initialized Tracers\n");
 
    int num_tools = num_diagnostics();
@@ -325,7 +325,7 @@ void tracerOutput( struct domain *theDomain ){
    	double vr = tr->Vr;
 	   double om = tr->Omega;
    	double vz = tr->Vz;
-	   fprintf(pFile, "%d %f %f %f %f %f  %f %f %f \n", type,x,y,z,r,phi, vr,om,vz);
+	   fprintf(pFile, "%d %.4f %.4f %.4f %.4f %.4f  %.4f %.4f %.4f \n", type, x,y,z, r,phi, vr,om,vz);
       tr = tr->next;
    }
 

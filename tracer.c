@@ -30,6 +30,8 @@ void initTracers_Rand( struct domain *theDomain ){  //randomly init tracers in s
    double dz   = zmax - zmin;
    double phimax = theParamList.phimax;
 
+   printf("Domain:\n r0: %f\n delr: %f\n z0: %f\n  delz: %f\n", rmin,dr,zmin,dz);
+
    srand(theDomain->rank);
    rand();
 
@@ -52,12 +54,17 @@ int getN0( int , int , int );
 
 void initializeTracers( struct domain *theDomain ){
 
-//----Put this into a function? -> give theDomain vars N0r, N0z, delR, delZ?----
+//----Put this into a function? Give domain vars N0r, N0z, delR, delZ?------
    int Num_R = theDomain->theParList.Num_R;
    int Num_Z = theDomain->theParList.Num_Z;
    int phi_max = theDomain->theParList.phimax;
    int *dim_rank = theDomain->dim_rank;
    int *dim_size = theDomain->dim_size;
+
+   double rmin = theDomain->theParList.rmin;
+   double rmax = theDomain->theParList.rmax;
+   double zmin = theDomain->theParList.zmin;
+   double zmax = theDomain->theParList.zmax;
 
    int N0r = getN0( dim_rank[0], dim_size[0], Num_R );
    int N1r = getN0( dim_rank[0]+1, dim_size[0], Num_R);
@@ -67,13 +74,15 @@ void initializeTracers( struct domain *theDomain ){
    int N1z = getN0( dim_rank[1]+1, dim_size[1], Num_Z);
    int Nz = N1z - N0z;
 
-   double dr = 1.0/(double)Num_R;
-   double r0 = (double)N0r*dr;
+   double dr = (rmax-rmin)/(double)Num_R;
+   double r0 = rmin + (double)N0r*dr;
    double delr = Nr*dr;
 
-   double dz = 1./(double)Num_Z;
-   double z0 = (double)N0z*dz;
+   double dz = (zmax-zmin)/(double)Num_Z;
+   double z0 = zmin + (double)N0z*dz;
    double delz = Nz*dz;
+
+   printf("Domain (Nr, Nz): (%d, %d)\n r0: %f\n delr: %f\n z0: %f\n  delz: %f\n", Nr,Nz, r0,delr,z0,delz);
 //------------------------------------------------------------------------------
 
   srand(theDomain->rank);
