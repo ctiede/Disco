@@ -82,7 +82,7 @@ void initializeTracers( struct domain *theDomain ){
    double z0 = zmin + (double)N0z*dz;
    double delz = Nz*dz;
 
-   printf("Domain (Nr, Nz): (%d, %d)\n r0: %f\n delr: %f\n z0: %f\n  delz: %f\n", Nr,Nz, r0,delr,z0,delz);
+   printf("Domain (Nr, Nz): (%d, %d)\n  r0: %f\n  delr: %f\n  z0: %f\n  delz: %f\n", Nr,Nz, r0,delr,z0,delz);
 //------------------------------------------------------------------------------
 
   srand(theDomain->rank);
@@ -105,7 +105,7 @@ void initializeTracers( struct domain *theDomain ){
 */
     tr = tr->next;
   }
-  printTracerCoords( theDomain );
+  //printTracerCoords( theDomain );
 }
 
 /*
