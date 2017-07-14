@@ -19,7 +19,7 @@ double getRandIn( double xmin, double dx){
 
 void printTracerCoords( struct domain * );
 
-void initTracers_Rand( struct domain *theDomain ){  //randomly init tracers in serial
+void initTracers_Rand( struct domain *theDomain ){  //randomly init tracers in serial (whole domain)
 
    struct param_list theParamList = theDomain->theParList;
    double rmin = theParamList.rmin;
@@ -30,8 +30,6 @@ void initTracers_Rand( struct domain *theDomain ){  //randomly init tracers in s
    double dz   = zmax - zmin;
    double phimax = theParamList.phimax;
 
-   printf("Domain:\n r0: %f\n delr: %f\n z0: %f\n  delz: %f\n", rmin,dr,zmin,dz);
-
    srand(theDomain->rank);
    rand();
 
@@ -41,7 +39,6 @@ void initTracers_Rand( struct domain *theDomain ){  //randomly init tracers in s
      double r = getRandIn( rmin, dr );
      double z = getRandIn( zmin, dz );
      double phi = getRandIn( 0.0, phimax );
-     //printf("Generated (r,phi,z): %f, %f, %f\n", r, phi, z);
      tr->R = r; tr->Z = z; tr->Phi = phi;
      tr->Type = 0; tr->rmFlag = 0;
      tr = tr->next;
@@ -60,6 +57,7 @@ void initializeTracers( struct domain *theDomain ){
    int phi_max = theDomain->theParList.phimax;
    int *dim_rank = theDomain->dim_rank;
    int *dim_size = theDomain->dim_size;
+   int rank = theDomain->rank;
 
    double rmin = theDomain->theParList.rmin;
    double rmax = theDomain->theParList.rmax;
@@ -82,7 +80,7 @@ void initializeTracers( struct domain *theDomain ){
    double z0 = zmin + (double)N0z*dz;
    double delz = Nz*dz;
 
-   printf("Domain (Nr, Nz): (%d, %d)\n  r0: %f\n  delr: %f\n  z0: %f\n  delz: %f\n", Nr,Nz, r0,delr,z0,delz);
+   printf("Rank %d Domain (Nr, Nz): (%d, %d)\n  r0: %f  delr: %f  z0: %f  delz: %f\n", rank,Nr,Nz, r0,delr,z0,delz);
 //------------------------------------------------------------------------------
 
   srand(theDomain->rank);
@@ -95,52 +93,12 @@ void initializeTracers( struct domain *theDomain ){
     r = getRandIn(r0, delr);
     z = getRandIn(z0, delz);
     phi = getRandIn(0, phi_max);
-    //printf("Got this far\n");
     tr->R = r; tr->Z = z; tr->Phi = phi;
     tr->Type = 0; tr->rmFlag = 0;  
-/*  if( tr->next==NULL )
-       printf("Tr->Next does NOT exist\n");
-    else
-       printf("Tr->Next DOES exist\n");
-*/
     tr = tr->next;
   }
   //printTracerCoords( theDomain );
 }
-
-/*
-void distributeTracers( struct domain *theDomain){
-   //Distributes tracers to their appropriate processes
-  //(rather tells processors to only track its tracers)
-
-   int Num_R = theDomain->theParList.Num_R;
-   int Num_Z = theDomain->theParList.Num_Z;
-   int * dim_rank = theDomain->dim_rank;
-   int * dim_size = theDomain->dim_size;
-   double phi_max = theDomain->phi_max;
-
-   int N0r = getN0( dim_rank[0]   , dim_size[0] , Num_R );
-   int N1r = getN0( dim_rank[0]+1 , dim_size[0] , Num_R );
-
-   int N0z = getN0( dim_rank[1]   , dim_size[1] , Num_Z );
-   int N1z = getN0( dim_rank[1]+1 , dim_size[1] , Num_Z );
-
-   double dr = 1./(double)Num_R;
-   double rm = (double)N0r * dr;
-   double rp = (double)N1r * dr;
-
-   double dz = 1./(double)Num_Z;
-   double zm = (double)N0z * dz;
-   double zp = (double)N1z * dz;
-
-   double xp[3] = {rp, phi_max, zp};
-   double xm[3] = {rm, 0.0, zm};
-
-   //Finish giving each process it's list of tracers
-   
-}
-*/
-
 
 int check_phi(double phi, double phip, double dphi, double phi_max){
 
