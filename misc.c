@@ -599,3 +599,39 @@ void AMR( struct domain * theDomain ){
       AMRsweep( theDomain , theCells+jk , jk );
    }
 }
+
+void setProcessCoords( struct domain *theDomain ){
+  //Sets coordinate bounds of each process without ghost cells
+  //Built for use in implementing tracers
+  int Num_R = theDomain->theParList.Num_R;
+  int Num_Z = theDomain->theParList.Num_Z;
+  int phi_max = theDomain->theParList.phimax;
+  int *dim_rank = theDomain->dim_rank;
+  int *dim_size = theDomain->dim_size;
+
+  double rmin = theDomain->theParList.rmin;
+  double rmax = theDomain->theParList.rmax;
+  double zmin = theDomain->theParList.zmin;
+  double zmax = theDomain->theParList.zmax;
+
+  int N0r = getN0( dim_rank[0], dim_size[0], Num_R );
+  int N1r = getN0( dim_rank[0]+1, dim_size[0], Num_R);
+  int Nr = N1r - N0r;
+
+  int N0z = getN0( dim_rank[1], dim_size[1], Num_Z );
+  int N1z = getN0( dim_rank[1]+1, dim_size[1], Num_Z);
+  int Nz = N1z - N0z;
+
+  double dr = (rmax-rmin)/(double)Num_R;
+  double r0 = rmin + (double)N0r*dr;
+  double delr = Nr*dr;
+
+  double dz = (zmax-zmin)/(double)Num_Z;
+  double z0 = zmin + (double)N0z*dz;
+  double delz = Nz*dz;
+
+  theDomain->r0 = r0;
+  theDomain->z0 = z0;
+  theDomian->delr = delr;
+  theDomain->delz = delz;
+}

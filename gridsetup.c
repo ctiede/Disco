@@ -87,5 +87,3 @@ void setupGrid( struct domain * theDomain ){
       }
    }
 }
-
-

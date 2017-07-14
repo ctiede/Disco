@@ -79,6 +79,8 @@ struct domain{
    int Npl, Ntr;	//number of planets and number of tracers
    double * r_jph;
    double * z_kph;
+   double r0, delr;
+   double z0, delz;
    double phi_max;
    int * fIndex_r;
    int * fIndex_z;
@@ -202,7 +204,7 @@ struct tracer{
 };
 
 struct tracerList{
-   
+
    int size;               //size of list
    struct tracer *head;    //pointer to first tracer in list
 };

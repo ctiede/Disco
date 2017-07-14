@@ -18,6 +18,7 @@ void setTracerParams( struct domain * );
 void setHlldParams( struct domain * );
 void setDiskParams( struct domain * );
 void setOmegaParams( struct domain * );
+void setProcessCoords( struct domain * );
 
 void build_tracerList( struct domain * );
 
@@ -44,6 +45,7 @@ void setupDomain( struct domain * theDomain ){
 
    //initialize tracers
    setTracerParams( theDomain );
+   setProcessCoords( theDomain );
    //int Ntr = theDomain->Ntr;
    //theDomain->theTracers = (struct tracer *) malloc( Ntr*sizeof(struct tracer) );
    theDomain->theTracers = (struct tracerList *) malloc( sizeof(struct tracerList) );
@@ -324,8 +326,8 @@ void tracerOutput( struct domain *theDomain ){
             fprintf(pFile, "%d\nAtoms. Timestep: %d\n", Ntr_tot+1, step);
             fprintf(pFile, "%d\t %f\t %f\t %f\t %f\t %f\t %f\t %f\t %f \n",
                            0, 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
-         } 
-         struct tracer *tr = theDomain->theTracers->head;   
+         }
+         struct tracer *tr = theDomain->theTracers->head;
          while( tr != NULL){
    	      int type = tr->Type;
    	      double r = tr->R;

@@ -1,21 +1,37 @@
 #include "paul.h"
 
+double get_dV( double *, double * );
+
 void setTracerParams( struct domain * theDomain){
 
-     int num_tracers = theDomain->theParList.num_tracers;
-     printf("Total Tracers: %d\n", num_tracers);
-     int size = theDomain->size;
-     printf("Size: %d\n", size);
-     theDomain->Ntr = num_tracers/size;   //crude round-down for now
-     printf("Local Tracers: %d\n", num_tracers/size);
-     //theDomain->Ntr = 2000;
+   int num_tracers = theDomain->theParList.num_tracers;
+   double rmin = theDomain->theParList.rmin;
+   double rmax = theDomain->theParList.rmax;
+   double zmin = theDomain->theParList.zmin;
+   double zmax = theDomain->theParList.zmax;
+   double phi_max = theDomain->theParlist.phimax;
+   double XM = {rmin, 0.0, zmin};
+   double XP = {rmax, phi_max, zmax};
+   double Vtot = get_dV( XP, XM );
+   double ratio = num_tracers/Vtot;
+
+
+   double r0   = theDomain->r0;
+   double z0   = theDomain->z0;
+   double delr = theDomain->delr;
+   double delz = theDomain->delz;
+   double xm = {r0, 0.0, z0};
+   double xp = {r0+delr, phi_max, z0+delz};
+   double dV = get_dV( xp, xm );
+
+   theDomain->Ntr = dV*ratio;   //crude round-down for now
+
 }
 
 double getRandIn( double xmin, double dx){
 
   return xmin + ( (double)rand()/(double)RAND_MAX )*dx;
 }
-
 
 void printTracerCoords( struct domain * );
 
@@ -51,41 +67,15 @@ int getN0( int , int , int );
 
 void initializeTracers( struct domain *theDomain ){
 
-//----Put this into a function? Give domain vars N0r, N0z, delR, delZ?------
-   int Num_R = theDomain->theParList.Num_R;
-   int Num_Z = theDomain->theParList.Num_Z;
-   int phi_max = theDomain->theParList.phimax;
-   int *dim_rank = theDomain->dim_rank;
-   int *dim_size = theDomain->dim_size;
-   int rank = theDomain->rank;
+  double r0   = theDomain->r0;
+  double z0   = theDomain->z0;
+  double delr = theDomain->delr;
+  double delz = theDomain->delz;
 
-   double rmin = theDomain->theParList.rmin;
-   double rmax = theDomain->theParList.rmax;
-   double zmin = theDomain->theParList.zmin;
-   double zmax = theDomain->theParList.zmax;
-
-   int N0r = getN0( dim_rank[0], dim_size[0], Num_R );
-   int N1r = getN0( dim_rank[0]+1, dim_size[0], Num_R);
-   int Nr = N1r - N0r;
-
-   int N0z = getN0( dim_rank[1], dim_size[1], Num_Z );
-   int N1z = getN0( dim_rank[1]+1, dim_size[1], Num_Z);
-   int Nz = N1z - N0z;
-
-   double dr = (rmax-rmin)/(double)Num_R;
-   double r0 = rmin + (double)N0r*dr;
-   double delr = Nr*dr;
-
-   double dz = (zmax-zmin)/(double)Num_Z;
-   double z0 = zmin + (double)N0z*dz;
-   double delz = Nz*dz;
-
-   printf("Rank %d Domain (Nr, Nz): (%d, %d)\n  r0: %f  delr: %f  z0: %f  delz: %f\n", rank,Nr,Nz, r0,delr,z0,delz);
-//------------------------------------------------------------------------------
-
-  srand(theDomain->rank);
+  int rank = theDomain->rank;
+  srand(rank);
   rand();
-  
+
   double r, z, phi;
   struct tracerList *theList = theDomain->theTracers;
   struct tracer *tr = theList->head;
@@ -94,7 +84,7 @@ void initializeTracers( struct domain *theDomain ){
     z = getRandIn(z0, delz);
     phi = getRandIn(0, phi_max);
     tr->R = r; tr->Z = z; tr->Phi = phi;
-    tr->Type = rank+1; tr->rmFlag = 0;  
+    tr->Type = rank+1; tr->rmFlag = 0;
     tr = tr->next;
   }
   //printTracerCoords( theDomain );
