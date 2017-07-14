@@ -94,7 +94,7 @@ void initializeTracers( struct domain *theDomain ){
     z = getRandIn(z0, delz);
     phi = getRandIn(0, phi_max);
     tr->R = r; tr->Z = z; tr->Phi = phi;
-    tr->Type = 0; tr->rmFlag = 0;  
+    tr->Type = rank; tr->rmFlag = 0;  
     tr = tr->next;
   }
   //printTracerCoords( theDomain );
