@@ -319,11 +319,11 @@ void tracerOutput( struct domain *theDomain ){
    for( rk=0; rk<size; ++rk){
       //MPI_Barrier( theDomain->theComm );
       if( rank==rk ){
-         //Open file with positions
          FILE * pFile = fopen(filename, "a");
          if( rank==0 ){
             fprintf(pFile, "%d\nAtoms. Timestep: %d\n", Ntr_tot+1, step);
-            fprintf(pFile, "%d %f %f %f %f %f  %f %f %f \n", 0, 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+            fprintf(pFile, "%d\t %f\t %f\t %f\t %f\t %f\t %f\t %f\t %f \n",
+                           0, 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
          } 
          struct tracer *tr = theDomain->theTracers->head;   
          while( tr != NULL){
@@ -336,7 +336,8 @@ void tracerOutput( struct domain *theDomain ){
          	double vr = tr->Vr;
       	   double om = tr->Omega;
          	double vz = tr->Vz;
-      	   fprintf(pFile, "%d %.4f %.4f %.4f %.4f %.4f  %.4f %.4f %.4f \n", type, x,y,z, r,phi, vr,om,vz);
+      	   fprintf(pFile, "%d %4.4f\t %4.4f\t %4.4f\t %4.4f\t %4.4f\t  %4.4f\t %4.4f\t %4.4f \n",
+                            type, x,y,z, r,phi, vr,om,vz);
             tr = tr->next;
          }
          fclose(pFile);
