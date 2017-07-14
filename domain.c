@@ -336,7 +336,7 @@ void tracerOutput( struct domain *theDomain ){
          	double vr = tr->Vr;
       	   double om = tr->Omega;
          	double vz = tr->Vz;
-      	   fprintf(pFile, "%d %4.4f\t %4.4f\t %4.4f\t %4.4f\t %4.4f\t  %4.4f\t %4.4f\t %4.4f \n",
+      	   fprintf(pFile, "%d %4.4f %4.4f %4.4f %4.4f %4.4f  %4.4f %4.4f %4.4f \n",
                             type, x,y,z, r,phi, vr,om,vz);
             tr = tr->next;
          }

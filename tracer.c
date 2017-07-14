@@ -130,25 +130,25 @@ void test_cell_vel( struct tracer *tr, struct cell *c ){
 
    int check1=0, check2=0, check3=0;
    if( isnan(c->prim[URR]) ){
-	tr->Vr 	  = 0;
-	tr->Omega = 0;
-	tr->Vz    = 0;
-	tr->Type  = 3;
-	check1 = 1;
+	   tr->Vr 	  = 0;
+	   tr->Omega = 0;
+   	tr->Vz    = 0;
+	   tr->Type  = 3;
+   	check1 = 1;
    }
    if( isnan(c->prim[UPP]) ){
-	tr->Vr    = 0;
-        tr->Omega = 0;
-        tr->Vz    = 0;
-        tr->Type  = 4;
-	check2 = 1;
+	   tr->Vr    = 0;
+      tr->Omega = 0;
+      tr->Vz    = 0;
+      tr->Type  = 4;
+   	check2 = 1;
    }
    if( isnan(c->prim[UZZ]) ){
-	tr->Vr    = 0;
-        tr->Omega = 0;
-        tr->Vz    = 0;
-        tr->Type  = 5;
-	check3 = 1;
+	   tr->Vr    = 0;
+      tr->Omega = 0;
+      tr->Vz    = 0;
+      tr->Type  = 5;
+	   check3 = 1;
    }
 
   if( check1==1 && check2==1 && check3==1){ tr->Type = 6; }
@@ -174,9 +174,9 @@ void get_local_vel(struct tracer *tr, struct cell *c){
    tr->Vr    = vr;
    tr->Omega = om;
    tr->Vz    = vz;
-   tr->Type  = type;
+   //tr->Type  = type;
    if( c != NULL ){
-     test_cell_vel( tr, c );
+     //test_cell_vel( tr, c );
    }
 }
 
