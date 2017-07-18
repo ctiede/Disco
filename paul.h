@@ -76,7 +76,7 @@ struct domain{
    int Nr,Nz,Ng;
    int N_ftracks_r;
    int N_ftracks_z;
-   int Npl, Ntr;	//number of planets and number of tracers
+   int Npl, Ntr, Nmc;	//number of planets, total tracers, and MC tracers per cell
    double * r_jph;
    double * z_kph;
    double r0, delr;
@@ -130,6 +130,8 @@ struct cell{
    double RK_Phi[NUM_FACES];
    double tempDoub;
 
+   struct tracerList *myTracers;
+
 };
 
 struct edge{
@@ -177,7 +179,7 @@ struct planet{
    double Fp;
 };
 
-struct tracer{
+struct veltracer{
    int    Type;
 
    double R;
@@ -195,8 +197,7 @@ struct tracer{
    double RK_vz;
 
    //Pointers to neighbors in linked list of tracers
-   struct tracer *next;
-   struct tracer *prev;
+   struct veltracer *next;
 
    //Flag for removal from linked list
    int rmFlag;
@@ -206,5 +207,18 @@ struct tracer{
 struct tracerList{
 
    int size;               //size of list
-   struct tracer *head;    //pointer to first tracer in list
+   struct mctracer *head;    //pointer to first tracer in list
+};
+
+struct mctracer{
+
+   int id;
+   int type;
+   int rmflag;
+
+   double r;
+   double phi;
+   double z;
+
+   struct mctracer *next;
 };
