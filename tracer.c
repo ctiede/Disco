@@ -9,9 +9,9 @@ void setTracerParams( struct domain * theDomain){
    double rmax = theDomain->theParList.rmax;
    double zmin = theDomain->theParList.zmin;
    double zmax = theDomain->theParList.zmax;
-   double phi_max = theDomain->theParlist.phimax;
-   double XM = {rmin, 0.0, zmin};
-   double XP = {rmax, phi_max, zmax};
+   double phi_max = theDomain->theParList.phimax;
+   double XM[3] = {rmin, 0.0, zmin};
+   double XP[3] = {rmax, phi_max, zmax};
    double Vtot = get_dV( XP, XM );
    double ratio = num_tracers/Vtot;
 
@@ -20,8 +20,8 @@ void setTracerParams( struct domain * theDomain){
    double z0   = theDomain->z0;
    double delr = theDomain->delr;
    double delz = theDomain->delz;
-   double xm = {r0, 0.0, z0};
-   double xp = {r0+delr, phi_max, z0+delz};
+   double xm[3] = {r0, 0.0, z0};
+   double xp[3] = {r0+delr, phi_max, z0+delz};
    double dV = get_dV( xp, xm );
 
    theDomain->Ntr = dV*ratio;   //crude round-down for now
@@ -71,6 +71,7 @@ void initializeTracers( struct domain *theDomain ){
   double z0   = theDomain->z0;
   double delr = theDomain->delr;
   double delz = theDomain->delz;
+  double phi_max = theDomain->theParList.phimax;
 
   int rank = theDomain->rank;
   srand(rank);

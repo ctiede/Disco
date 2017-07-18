@@ -600,12 +600,13 @@ void AMR( struct domain * theDomain ){
    }
 }
 
+int getN0( int, int, int );
+
 void setProcessCoords( struct domain *theDomain ){
   //Sets coordinate bounds of each process without ghost cells
   //Built for use in implementing tracers
   int Num_R = theDomain->theParList.Num_R;
   int Num_Z = theDomain->theParList.Num_Z;
-  int phi_max = theDomain->theParList.phimax;
   int *dim_rank = theDomain->dim_rank;
   int *dim_size = theDomain->dim_size;
 
@@ -632,6 +633,6 @@ void setProcessCoords( struct domain *theDomain ){
 
   theDomain->r0 = r0;
   theDomain->z0 = z0;
-  theDomian->delr = delr;
+  theDomain->delr = delr;
   theDomain->delz = delz;
 }

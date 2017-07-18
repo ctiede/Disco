@@ -60,4 +60,4 @@ Mach_Number		10.0
 Include_Atmos		0
 
 //Tracer Parameters
-N_Tracers    100
+N_Tracers    2000
