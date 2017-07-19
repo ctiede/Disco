@@ -5,6 +5,10 @@ double get_dV( double *, double * );
 void setTracerParams( struct domain * theDomain){
 
    int num_tracers = theDomain->theParList.num_tracers;
+   int size = theDomain->size;
+   theDomain->Ntr = num_tracers/size;
+
+/*   
    double rmin = theDomain->theParList.rmin;
    double rmax = theDomain->theParList.rmax;
    double zmin = theDomain->theParList.zmin;
@@ -24,7 +28,8 @@ void setTracerParams( struct domain * theDomain){
    double xp[3] = {r0+delr, phi_max, z0+delz};
    double dV = get_dV( xp, xm );
 
-   theDomain->Ntr = dV*ratio;   //crude round-down for now
+   theDomain->Ntr = dV*ratio; 
+*/
 
 }
 
