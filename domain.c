@@ -43,6 +43,7 @@ void setupDomain( struct domain * theDomain ){
    theDomain->thePlanets = (struct planet *) malloc( Npl*sizeof(struct planet) );
    initializePlanets( theDomain->thePlanets );
 
+/*------------------Need to finish MC Tracer initialization and updating------------   
    //initialize tracers
    setTracerParams( theDomain );
    setProcessCoords( theDomain );
@@ -55,6 +56,7 @@ void setupDomain( struct domain * theDomain ){
    initializeTracers( theDomain );  //initialize tracers on each process
    //initTracers_Rand( theDomain );
    printf("Initialized Tracers\n");
+----------------------------------------------------------------------------------*/
 
    int num_tools = num_diagnostics();
    theDomain->num_tools = num_tools;

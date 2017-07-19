@@ -20,6 +20,15 @@ void setTracerParams( struct domain * theDomain){
    theDomain->Ntr = tr_tot;
 }
 
+void addTracer( struct cell *c, int id ){
+
+   struct mctracer *tr = (struct tracer *)malloc( sizeof(struct mctracer) );
+   struct mctracer *head = c->myTracers->head;
+   tr->next = head;
+   c->myTracers->head = tr;
+   c->myTracers->size +=1;
+}
+
 void initMCtracers( struct domain *theDomain ){
 
    int Nmc = theDomain->Nmc;
@@ -49,12 +58,19 @@ void initMCtracers( struct domain *theDomain ){
          jk = j + Nr*k;
          for( i=0; i<Np[jk]; ++i ){
             struct cell *c = &(theCells[jk][i]);
-            for( n=0; n<Nmc; ++n )
+            for( n=0; n<Nmc; ++n ){
                addTracer( c, id );
+               it++;
+            }
          }
       }
    }
 }
+
+//#######################################################################################
+//-------The Above should work to initialize a list of Nmc tracers to each cell----------
+//-------The Below needs to updated to reflect each cell keeping its own tracerlist------
+//#######################################################################################
 
 int check_phi(double phi, double phip, double dphi, double phi_max){
 
