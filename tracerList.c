@@ -24,6 +24,8 @@ int getListSize( struct tracerList *theList ){
 
 void rmTracers( struct tracerList *theList ){
 
+   int rank;
+   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   struct tracer *tr = theList->head;
   struct tracer *prev = NULL;
   struct tracer *del  = NULL;
@@ -37,7 +39,9 @@ void rmTracers( struct tracerList *theList ){
          }
          del = tr;
          tr = tr->next;
+         int type = tr->Type;
          free(del);
+         printf("Deleted a tracer on rank %d with type %d\n", rank, type);
       }
       else{
          prev = tr;

@@ -299,6 +299,8 @@ void possiblyOutput( struct domain * theDomain , int override ){
 
 }
 
+int getListSize( struct tracerList * );
+
 void tracerOutput( struct domain *theDomain ){
 
    char filename[256];
@@ -318,14 +320,15 @@ void tracerOutput( struct domain *theDomain ){
    MPI_Barrier( theDomain->theComm);
 
    int rk;
+   int count=0;
    for( rk=0; rk<size; ++rk){
       //MPI_Barrier( theDomain->theComm );
       if( rank==rk ){
          FILE * pFile = fopen(filename, "a");
          if( rank==0 ){
-            fprintf(pFile, "%d\nAtoms. Timestep: %d\n", Ntr_tot+1, step);
-            fprintf(pFile, "%d\t %f\t %f\t %f\t %f\t %f\t %f\t %f\t %f \n",
-                           0, 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+            fprintf(pFile, "%d \nAtoms. Timestep: %d\n", Ntr_tot+1, step);
+            fprintf(pFile, "%d %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f \n",
+                     0, 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
          }
          struct tracer *tr = theDomain->theTracers->head;
          while( tr != NULL){
@@ -341,6 +344,7 @@ void tracerOutput( struct domain *theDomain ){
       	   fprintf(pFile, "%d %4.4f %4.4f %4.4f %4.4f %4.4f  %4.4f %4.4f %4.4f \n",
                             type, x,y,z, r,phi, vr,om,vz);
             tr = tr->next;
+            count++;
          }
          fclose(pFile);
       }
@@ -348,4 +352,5 @@ void tracerOutput( struct domain *theDomain ){
    }
    step++;
    theDomain->mdStep = step;
+   }
 }

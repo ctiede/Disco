@@ -102,6 +102,7 @@ void generate_tr_number( struct domain *theDomain, int *numL, int *numR, int dim
 }
 
 void addTracer( struct tracerList * );
+int getListSize( struct tracerList * );
 
 void fill_tr_list( struct tracerList *theList, int ntr, struct tr_lite *tr_recv ){
 
@@ -111,11 +112,13 @@ void fill_tr_list( struct tracerList *theList, int ntr, struct tr_lite *tr_recv 
       addTracer( theList );
       tr = theList->head;
       copy_lite_to_tr( (tr_recv + n) , tr );
+      tr->rmFlag = 0;
    }
 
 }
 
 void rmTracers( struct tracerList * );
+void printTracerCoords( struct domain * );
 
 void exchangeTracers( struct domain *theDomain, int dim ){
 
@@ -149,6 +152,7 @@ void exchangeTracers( struct domain *theDomain, int dim ){
                  &recv_sizeL, 1, MPI_INT,  left_rank[dim], tag+1,
                  grid_comm, &status );
 
+
 //------Build list of tracers to send--------------------
    struct tr_lite trL_send[send_sizeL];
    struct tr_lite trR_send[send_sizeR];
@@ -170,5 +174,6 @@ void exchangeTracers( struct domain *theDomain, int dim ){
    fill_tr_list( theDomain->theTracers, recv_sizeL, trL_recv );
 //------Remove tracers sent away--------------------------
    rmTracers( theDomain->theTracers );
+
    MPI_Type_free( &tr_mpi );
 }
