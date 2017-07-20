@@ -8,6 +8,7 @@ struct tr_lite{
    int type;
    double x[3];
    double v[3];
+
 };
 
 void generate_mpi_tr( MPI_Datatype *tr_mpi ){
@@ -17,7 +18,7 @@ void generate_mpi_tr( MPI_Datatype *tr_mpi ){
    int blocksize[]      = { 1, 3, 3 };
    MPI_Datatype types[] = { MPI_Int, MPI_DOUBLE, MPI_DOUBLE };
    MPI_Aint offsets[3];
-   
+
    offsets[0] = (char *)&(test.type) - (char *)(&test);
    offsets[1] = (char *)&(test.x)    - (char *)(&test);
    offsets[2] = (char *)&(test.v)    - (char *)(&test);
@@ -43,7 +44,7 @@ void copy_lite_to_tr( struct tr_lite *trl, struct tracer *tr ){
 }
 
 void generate_sendbuffer_tr( struct domain *theDomain, int numL, int numR,  struct tr_lite *trL, struct tr_lite *trR, dim ){
-   
+
    int iL = 0;
    int iR = 0;
    struct tracerList *theList = theDomain->theTracers;
@@ -56,6 +57,7 @@ void generate_sendbuffer_tr( struct domain *theDomain, int numL, int numR,  stru
          copy_tr_to_lite( tr, trR+iR );
          iR++
       }
+      tr = tr->next;
    }
 
 }
@@ -74,13 +76,13 @@ void generate_tr_number( struct domain *theDomain, int *numL, int *numR, int dim
    double coord;
    struct tracer *tr = theDomain->theTracers->head;
    while( tr!=NULL ){
-      if( dim==0 ) 
+      if( dim==0 )
          coord = tr->R;
-      if( dim==1 ) 
+      if( dim==1 )
          coord = tr->Z;
       if( coord < x[dim] ){
          tr->rmFlag = 1;
-         iL++;         
+         iL++;
       }
       if( x[dim]+delx[dim] < coord ){
          tr->rmFlag = 2;
@@ -96,7 +98,7 @@ void generate_tr_number( struct domain *theDomain, int *numL, int *numR, int dim
 void addTracer( struct tracerList * );
 
 void exchangeTracers( struct *theDomain, int dim ){
-   
+
    MPI_Datatype tr_mpi = {0};
    generate_mpi_tr( &tr_mpi );
 
@@ -137,7 +139,7 @@ void exchangeTracers( struct *theDomain, int dim ){
 //------Build list of tracers to send---------------------
    generate_sendbuffer_tr( theDomain, numL, numR, trL_send, trR_send, dim );
 
-//------Send lists of tracers----------------------------- 
+//------Send lists of tracers-----------------------------
    MPI_Sendrecv( trL_send, send_sizeL, tr_mpi,  left_rank[dim], tag+2,
                  trR_recv, recv_sizeR, tr_mpi, right_rank[dim], tag+2,
                  grid_comm, &status );
@@ -145,10 +147,18 @@ void exchangeTracers( struct *theDomain, int dim ){
                  trL_recv, recv_sizeL, tr_mpi,  left_rank[dim], tag+3,
                  grid_comm, &status );
 //------Add/Clear tracers from theDomain
+//Put this stuff into a function to be called twice
    for( n=0; n<recv_sizeR; ++n){
       addTracer( theDomain->theTracers );
-      //function to add tr_lite info to the tracer that has just been added
+      struct tracer *tr = theDomain->theTracers->head;
+      copy_lite_to_tr( (trR_recv + n) , tr );
+   }
+   for( n=0; n<recv_sizeL; ++n){
+     addTracer( theDomain->theTracers );
+     struct tracer *tr = theDomain->theTracers->head;
+     copy_lite_to_tr( (trL_recv + n) , tr );
    }
 
+   rmTracers( theDomain->theTracers );
    MPI_Type_free( &tr_mpi );
 }
