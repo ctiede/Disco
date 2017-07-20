@@ -33,6 +33,7 @@ int planet_motion_analytic(void);
 void boundary_r( struct domain * );
 void boundary_trans( struct domain * , int );
 void exchangeData( struct domain * , int );
+void exchangeTracers( struct domain * , int );
 
 //int get_num_rzFaces( int , int , int );
 int set_B_flag( void );
@@ -100,10 +101,12 @@ void onestep( struct domain * theDomain , double RK , double dt , int first_step
 
    boundary_trans( theDomain , 1 );
    exchangeData( theDomain , 0 );
+   exchangeTracers( theDomain, 0 );
    if( Nz > 1 ){
       int Periodic = theDomain->theParList.Z_Periodic;
       if( !Periodic ) boundary_trans( theDomain , 2 );
       exchangeData( theDomain , 1 );
+      exchangeTracers( theDomain, 1 );
    }
 
    if( theDomain->theFaces_1 ) free( theDomain->theFaces_1 );

@@ -26,6 +26,7 @@ void rmTracers( struct tracerList *theList ){
 
   struct tracer *tr = theList->head;
   struct tracer *prev = NULL;
+  struct tracer *del  = NULL;
   while( tr!=NULL ){
       if( tr->rmFlag ){
          if( prev ){ //if prev has a valid value
@@ -34,10 +35,14 @@ void rmTracers( struct tracerList *theList ){
          else{ //if prev is NULL, need to repoint head
             theList->head = tr->next;
          }
-         free(tr);
+         del = tr;
+         tr = tr->next;
+         free(del);
       }
-      prev = tr;
-      tr = tr->next;
+      else{
+         prev = tr;
+         tr = tr->next;
+      }
    }
 }
 
