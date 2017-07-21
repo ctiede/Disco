@@ -304,7 +304,7 @@ int getListSize( struct tracerList * );
 void tracerOutput( struct domain *theDomain ){
 
    char filename[256];
-   sprintf(filename, "%s.xyz", "tracerParal" );
+   sprintf(filename, "%s.xyz", "tracerShocktube" );
 
    int Ntr_tot = theDomain->Ntr;
    int step = theDomain->mdStep;
@@ -352,5 +352,4 @@ void tracerOutput( struct domain *theDomain ){
    }
    step++;
    theDomain->mdStep = step;
-   }
 }

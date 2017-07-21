@@ -41,7 +41,6 @@ void rmTracers( struct tracerList *theList ){
          tr = tr->next;
          int type = tr->Type;
          free(del);
-         printf("Deleted a tracer on rank %d with type %d\n", rank, type);
       }
       else{
          prev = tr;
