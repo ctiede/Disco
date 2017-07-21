@@ -49,12 +49,9 @@ void setupDomain( struct domain * theDomain ){
    //int Ntr = theDomain->Ntr;
    //theDomain->theTracers = (struct tracer *) malloc( Ntr*sizeof(struct tracer) );
    theDomain->theTracers = (struct tracerList *) malloc( sizeof(struct tracerList) );
-   printf("Created space for tracerList\n");
    init_tracerList( theDomain );  //initialize each processor's tracer list
-   printf("Initialized Tracer List\n");
    initializeTracers( theDomain );  //initialize tracers on each process
    //initTracers_Rand( theDomain );
-   printf("Initialized Tracers\n");
 
    int num_tools = num_diagnostics();
    theDomain->num_tools = num_tools;
