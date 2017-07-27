@@ -53,6 +53,7 @@ struct param_list{
    int alpha_flag;
 
    int num_tracers;
+   int tr_out_flag;
 
    int restart_flag;
    int CT;

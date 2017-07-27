@@ -57,7 +57,6 @@ void init_tracerList( struct domain *theDomain ){
    theList->size = 0;
 
    int n;
-   printf("Trying to create list of %d tracers\n", Ntr);
    for( n=0; n<Ntr; ++n){     //create linked list of Ntr tracers
       addTracer( theList );
    }

@@ -104,6 +104,7 @@ int read_par_file( struct domain * theDomain ){
          err += readvar( pfile , "Drift_Exp"             , VAR_DOUB , &(theList->Drift_Exp)       );
          err += readvar( pfile , "Constrained_Transport" , VAR_INT  , &(theList->CT)              );
          err += readvar( pfile , "N_Tracers"		         , VAR_INT  , &(theList->num_tracers)     );
+         err += readvar( pfile , "Tracer_Out_Type"       , VAR_INT  , &(theList->tr_out_flag)     );
       }
       MPI_Barrier(MPI_COMM_WORLD);
    }

@@ -301,12 +301,15 @@ int getListSize( struct tracerList * );
 void tracerOutput( struct domain *theDomain ){
 
    char filename[256];
-   sprintf(filename, "%s.xyz", "tracerShocktube" );
+   sprintf(filename, "%s.xyz", "tracerKepler" );
 
    int Ntr_tot = theDomain->Ntr;
    int step = theDomain->mdStep;
    int rank = theDomain->rank;
    int size = theDomain->size;
+   double t = theDomain->t;
+
+   int outFlag = theDomain->theParList.tr_out_flag;
 
    MPI_Allreduce( MPI_IN_PLACE, &Ntr_tot, 1, MPI_INT, MPI_SUM, theDomain->theComm );
 
@@ -322,10 +325,10 @@ void tracerOutput( struct domain *theDomain ){
       //MPI_Barrier( theDomain->theComm );
       if( rank==rk ){
          FILE * pFile = fopen(filename, "a");
-         if( rank==0 ){
+         if( rank==0 && outFlag==0 ){
             fprintf(pFile, "%d \nAtoms. Timestep: %d\n", Ntr_tot+1, step);
-            fprintf(pFile, "%d %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f \n",
-                     0, 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+            fprintf(pFile, "%d %f %d %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f \n",
+                     step,t, 0, 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
          }
          struct tracer *tr = theDomain->theTracers->head;
          while( tr != NULL){
@@ -338,8 +341,8 @@ void tracerOutput( struct domain *theDomain ){
          	double vr = tr->Vr;
       	   double om = tr->Omega;
          	double vz = tr->Vz;
-      	   fprintf(pFile, "%d %4.4f %4.4f %4.4f %4.4f %4.4f  %4.4f %4.4f %4.4f \n",
-                            type, x,y,z, r,phi, vr,om,vz);
+      	   fprintf(pFile, "%d %3.3f %d %4.4f %4.4f %4.4f %4.4f %4.4f  %4.4f %4.4f %4.4f \n",
+                            step,t, type, x,y,z, r,phi, vr,om,vz);
             tr = tr->next;
             count++;
          }
